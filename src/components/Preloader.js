@@ -78,11 +78,6 @@ export class Preloader {
             <div class="preloader-hud-bar-fill" id="hud-bar-fill"></div>
           </div>
         </div>
-
-        <button class="preloader-enter-btn" id="preloader-skip-btn" aria-label="Enter Realm">
-          <span class="btn-dot"></span>
-          <span class="btn-label">ENTER REALM // SPACE ↵</span>
-        </button>
       </div>
 
       <div class="preloader-flash-overlay" id="preloader-flash"></div>
@@ -92,7 +87,6 @@ export class Preloader {
 
     this.canvas = this.container.querySelector('#preloader-3d-canvas');
     this.barFill = this.container.querySelector('#hud-bar-fill');
-    this.skipBtn = this.container.querySelector('#preloader-skip-btn');
     this.flashEl = this.container.querySelector('#preloader-flash');
     this.hud = this.container.querySelector('#preloader-hud');
 
@@ -394,10 +388,6 @@ export class Preloader {
         this.triggerComplete();
       }
     };
-
-    if (this.skipBtn) {
-      this.skipBtn.addEventListener('click', triggerSkip);
-    }
 
     this.keyHandler = (e) => {
       if (e.code === 'Space' || e.code === 'Enter' || e.code === 'Escape') {

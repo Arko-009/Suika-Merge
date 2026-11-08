@@ -185,7 +185,8 @@ button, a, .problem-card, .milestone-node, .totem-pill-btn, .voice-track-tab, .s
   transition: width 0.08s linear;
 }
 
-.preloader-hud-row {
+.preloader-hud-row,
+.preloader-enter-btn {
   display: none !important;
 }
 
