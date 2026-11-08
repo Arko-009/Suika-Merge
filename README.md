@@ -1,116 +1,58 @@
-# Suika Merge Arcade Hub 🧪🐱
+# VALKYRIE // REAL-WORLD & GAMING QUESTS, EVERY DAY
 
-A browser gaming site and arcade portal for **Suika Merge** games, featuring high-performance Position-Based Dynamics (PBD) physics, multiple container shapes, sound effects, and extensible game themes.
-
-![Cat Merge Laboratory](./public/assets/covers/cat-merge.svg)
-
----
-
-## 🎮 Included Games & Themes
-
-| Game | Category | Status | Highlights |
-| :--- | :--- | :--- | :--- |
-| **Cat Merge: Laboratory** | Memes / Lab | **Playable Now** | 14 progressive meme cat tiers, authentic MP3 sound effects, 3 container shapes |
-| **Suika Classic: Fruit Lab** | Classic | **Playable Now** | 11 fruit tiers from Cherries up to Giant Watermelon with procedural badges |
-| **Cosmic Merge: Solar Odyssey** | Sci-Fi | Coming Soon | Stellar fusion from asteroids to supermassive black holes |
-| **Capybara Merge: Zen Water Lab** | Chill | Coming Soon | Cozy hot spring wildlife with buoyancy physics |
-| **Doge & Memes: To The Moon** | Memes | Coming Soon | Volatile moon rocket physics with meme soundboard |
+> **An End-to-End Awwwards Site of the Day & Developer Award Inspired 3D Experience**
+> Modeled after the acclaimed architecture of [Grail](https://grail-app.com/), adapted into a dark fantasy cyber-medieval RPG Gaming Omniverse.
 
 ---
 
-## 🧪 Container Shapes
+## 🌟 Visual & Interactive Showcase
 
-Players can customize their physics challenge container before dropping items:
-
-1. **🧪 Flask Container**: Clean white vertical neck connecting into an animated glowing RGB rainbow circular chamber. Demands precision aim down the vertical neck.
-2. **📦 Box Container**: Arcade open-top rectangular crate with rounded bottom corners and wide dropping range.
-3. **⬡ Hexagon Container**: Cyber funnel with sloped sliding walls that guide items inward for rapid chain-reaction merges.
-
----
-
-## ⚡ Physics Engine Highlights
-
-- **Position-Based Dynamics (PBD)**: 8 sub-steps per frame guaranteeing zero resting overlap under continuous gravity.
-- **Instant Merge Detection**: Pairs same-level touching items before integration, preventing repulsion bounce.
-- **Rotational & Angular Velocity**: Realistic rolling spin with clamping to avoid pinwheel anomalies.
-- **Fluid Stir Vortex**: Stir button (`🌀` or `S` key) unleashes a fluid vortex impulse to unstick trapped items.
-- **Overflow Danger Monitor**: 3-second countdown with visual warnings when items rest above the danger threshold.
-
----
-
-## ⌨️ Controls
-
-- **Mouse / Touch Drag**: Move dropper left and right across the container aperture.
-- **Click / Release Touch**: Drop item immediately into the container.
-- **A / D or Left / Right Arrows**: Move dropper smoothly.
-- **Space or Down Arrow**: Drop item immediately.
-- **S Key**: Stir / shake container vortex.
-- **P Key or Escape**: Open in-game Settings / Pause menu.
+- **Next-Gen Cyber Arcade Joystick Preloader**:
+  - Articulated 3D chrome shaft and glowing neon gold ball-top joystick that dynamically calibrates in 360° and tracks user cursor tilt with spring physics.
+  - Interactive arcade microswitch action buttons (`STR` ▲, `INT` ◼, `CHA` ●, `WIS` ✖) that depress on click with synthesized harmonic frequency tones.
+  - Live HUD telemetry readout with hardware diagnostics and FPS verification.
+- **Mindblowing Hyperspace Aperture Opening Transition**:
+  - Dual cyber-shutter doors part horizontally at warp speed (`translateX(-100%)` / `translateX(100%)`) with glowing energy edges.
+  - Center joystick console accelerates and zooms directly into the camera (`scale(2.8)`), accompanied by a sub-bass warp frequency shockwave and golden optical flare flash.
+  - Hero 3D Quest Spiral GL pops into position with high-tech HUD lock-on staggered animations, 100% hardware-accelerated at 60fps without lag.
+- **3D Quest Spiral GL (Three.js WebGL)**: Bent 3D WebGL cards flowing seamlessly along an Archimedean spiral ribbon with inertia drag, wheel momentum, and procedural gold canvas textures.
+- **Interactive Lab Controls**: Live real-time parameter tuning for Winding, Radius, Card Scale, Auto Speed, and Continuous Inertia.
+- **Quest Inspection Modal**: Detailed lore, rules of engagement, XP bonuses, and direct quest initiation.
+- **Chapter 01 (About Problem)**: Editorial word-by-word scroll lighting, side-by-side comparison between the mindless autopilot loop and the awakened hero protocol.
+- **Chapter 02 (About Timer)**: Real-time 48-hour live countdown timer with millisecond resolution, radial SVG gauge, and domain-warp golden ink ripple canvas wave.
+- **Chapter 03 (About Journey)**: Roman numeral milestone progression (I to IV), 28-day interactive streak matrix with glowing ember nodes, and level 50 auto-cancel mechanics.
+- **Chapter 04 (About Voice Feedback & Echoes)**: Procedural generative gold vine garden canvas blooming organic branches, floral nodes, and spores; interactive voice player with real-time waveform oscilloscope.
+- **Chapter 05 (About Totems - 3D Relic Stage)**: Three.js 3D relic stage with domain-warped gold background shader; 4 swappable high-detail 3D relics (Dire Wolf, Elder Wyrm, Obsidian Raven, Iron Sentinel) with mouse-parallax tilt and studio lighting.
+- **Chapter 06 (About Stats - Physics Arena)**: Matter-style 2D gravitational physics canvas where users can toss and bounce stat orbs (STR, INT, WIS, CHA) off boundaries with inertia, collisions, and neon goo glow trails.
+- **Chapter 07 (About Guilds - Spoke Wheel)**: 360-degree rotating wheel with 16 heraldic spokes, guild crests, pledge allegiance mechanics, and mechanical audio ticks.
+- **Chapter 08 (Get In Early - Waitlist)**: Mythical dragon SVG artwork with interactive cursor-tracking eyes, conversational reactive email input with witty live feedback, and golden confetti celebration.
+- **Global Sound Synthesizer Engine**: Zero external audio dependencies; pure Web Audio API synthesis for ambient medieval drones, haptic clicks, mechanical ticks, whooshes, warp frequencies, and fanfare chords.
+- **Custom Magnetic Cursor**: Dual-ring cursor with smooth lerping, hover scales, and context pills (`DRAG SPIRAL`, `THROW STAT`, `SPIN WHEEL`, `LISTEN`, `ENTER REALM`).
+- **Smooth Momentum Scroll**: Buttery inertia scroll spy with dynamic chapter tracker in top glassmorphic navigation bar.
 
 ---
 
-## 🚀 Running the Project
+## 🚀 Getting Started
 
-### Option 1: Direct Static Hosting (Zero Install)
-The portal uses modern native ES modules and requires zero build steps:
 ```bash
-# Using Python built-in server:
-python -m http.server 3000
-
-# Or using npx serve:
-npx serve .
-```
-Then open `http://localhost:3000` in any web browser.
-
-### Option 2: Vite Development Server
-```bash
+# Install dependencies
 npm install
-npm run dev
-```
 
-### Option 3: Production Build
-```bash
+# Start Vite Development Server
+npm run dev
+
+# Build for Production
 npm run build
 ```
-Generates a minified, optimized production bundle inside `dist/`.
+
+The application runs at `http://localhost:3001/` (or `http://localhost:3000/`).
 
 ---
 
-## 📁 Project Architecture
+## 🛠️ Tech Stack
 
-```
-Suika-Merge/
-├── index.html                   # Gaming Portal & In-Game Single Page App
-├── package.json                 # Project scripts (dev, build, preview)
-├── vite.config.js               # Vite configuration
-├── README.md                    # Project documentation
-├── public/
-│   ├── favicon.svg              # Portal icon
-│   └── assets/
-│       ├── cats/                # 14 circular-masked Cat Meme PNGs (ball_0.png .. ball_13.png)
-│       ├── sounds/              # 14 normalized MP3 sounds (level_0.mp3 .. level_13.mp3)
-│       └── covers/              # Vector SVG game catalog cover art
-└── src/
-    ├── styles/
-    │   ├── main.css             # Cyberpunk / Arcade portal styling
-    │   └── game.css             # Responsive game canvas & HUD styling
-    ├── portal/
-    │   ├── catalog.js           # Game catalog data & category filtering
-    │   └── leaderboard.js       # Player ranking & persistent high score tracking
-    ├── engine/
-    │   ├── Vector2D.js          # Vector math operations
-    │   ├── Ball.js              # Rigid circle body with exponential radius scaling
-    │   ├── GameContainer.js     # Container interface & factory
-    │   ├── FlaskContainer.js    # White vertical neck + glowing RGB rainbow chamber
-    │   ├── BoxContainer.js      # Rectangular U-shaped arcade crate
-    │   ├── HexagonContainer.js  # Cyber funnel with angled sliding walls
-    │   ├── PhysicsEngine.js     # 8-substep Position-Based Dynamics physics engine
-    │   ├── SoundManager.js      # Web Audio API + HTML5 Audio soundboard
-    │   ├── ParticleSystem.js    # Sparkle bursts, shockwaves, floating score text, screen shake
-    │   ├── GameEngine.js        # Game state, drop timers, combos, danger monitor
-    │   └── GameCanvas.js        # 60-120 FPS hardware-accelerated Canvas renderer
-    ├── games/
-    │   ├── catMergeTheme.js     # Cat Merge theme configuration & asset bindings
-    │   └── fruitMergeTheme.js   # Classic Suika Fruit Merge theme configuration
-    └── main.js                  # Application bootstrap and routing
-```
+- **Three.js (WebGL 2.0)**: 3D spiral deck, bent planes, PBR lighting, custom materials, 3D guardian relics.
+- **HTML5 Canvas & 2D Physics**: Matter-style gravitational simulation, procedural gold vine garden, dynamic waveform oscilloscope, and ink ripple waves.
+- **Web Audio API**: Procedural sound design engine with zero external file dependencies.
+- **Canvas Confetti**: High-performance celebration particles.
+- **Vite 6**: Instant HMR and optimized production bundling.

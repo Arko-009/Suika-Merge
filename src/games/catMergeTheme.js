@@ -38,3 +38,4 @@ export const CatMergeTheme = {
     return `./assets/sounds/level_${idx}.mp3`;
   }
 };
+

@@ -343,3 +343,4 @@ export class GameCanvas {
     window.addEventListener('resize', () => this.resize());
   }
 }
+

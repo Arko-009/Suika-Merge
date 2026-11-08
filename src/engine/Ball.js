@@ -70,3 +70,4 @@ export class Ball {
     this.visualScale = startScale;
   }
 }
+

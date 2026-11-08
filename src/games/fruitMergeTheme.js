@@ -58,3 +58,4 @@ export const FruitMergeTheme = {
     return `./assets/sounds/level_${Math.min(level, 13)}.mp3`;
   }
 };
+

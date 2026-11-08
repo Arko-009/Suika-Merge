@@ -256,3 +256,4 @@ export class GameEngine {
     if (this.onScoreChanged) this.onScoreChanged(this.currentScore, this.highScore);
   }
 }
+

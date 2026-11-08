@@ -36,3 +36,4 @@ export class LeaderboardManager {
     return combined.slice(0, 8);
   }
 }
+

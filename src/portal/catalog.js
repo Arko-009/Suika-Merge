@@ -70,3 +70,4 @@ export const GAME_CATALOG = [
     features: ['Meme Soundboard', 'Zero-G Chaos Mode', 'Rocket Thrusters']
   }
 ];
+

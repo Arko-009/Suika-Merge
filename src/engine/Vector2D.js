@@ -54,3 +54,4 @@ export class Vector2D {
     return Math.sqrt(this.distSq(v));
   }
 }
+

@@ -1,339 +1,194 @@
-import { GAME_CATALOG } from './portal/catalog.js';
-import { LeaderboardManager } from './portal/leaderboard.js';
-import { GameEngine, GameState } from './engine/GameEngine.js';
-import { GameCanvas } from './engine/GameCanvas.js';
-import { ContainerType, ContainerMeta } from './engine/GameContainer.js';
-import { SoundManager } from './engine/SoundManager.js';
-import { CatMergeTheme } from './games/catMergeTheme.js';
+/**
+ * VALKYRIE // REAL-WORLD & GAMING QUESTS, EVERY DAY
+ * End-to-end Awwwards Site of the Day Clone Architecture
+ * Built with Three.js WebGL, Web Audio Synthesis, Matter-Style Physics, and Generative Canvases.
+ */
 
-class SuikaPortalApp {
+import { sound } from './sound/SoundEngine.js';
+import { Preloader } from './components/Preloader.js';
+import { Header } from './components/Header.js';
+import { SpiralDeck } from './components/SpiralDeck.js';
+import { LabPanel } from './components/LabPanel.js';
+import { QuestModal } from './components/QuestModal.js';
+import { Chapter01Problem } from './components/Chapter01Problem.js';
+import { Chapter02Timer } from './components/Chapter02Timer.js';
+import { Chapter03Journey } from './components/Chapter03Journey.js';
+import { Chapter04VoiceGarden } from './components/Chapter04VoiceGarden.js';
+import { Chapter05Totems } from './components/Chapter05Totems.js';
+import { Chapter06Stats } from './components/Chapter06Stats.js';
+import { Chapter07Guilds } from './components/Chapter07Guilds.js';
+import { Chapter08Waitlist } from './components/Chapter08Waitlist.js';
+import { Footer } from './components/Footer.js';
+import { SmoothScroll } from './components/SmoothScroll.js';
+
+class App {
   constructor() {
-    this.soundManager = new SoundManager();
-    this.activeGameId = 'cat-merge';
-    this.activeTheme = CatMergeTheme;
-    this.activeContainerType = localStorage.getItem('suika_selected_shape') || ContainerType.FLASK;
-
-    this.engine = null;
-    this.gameCanvas = null;
-
-    this.initDOM();
-    this.renderCatalog('all');
-    this.renderLeaderboard();
-    this.bindPortalEvents();
+    this.appEl = document.getElementById('app');
+    this.init();
   }
 
-  initDOM() {
-    // Portal elements
-    this.portalContainer = document.getElementById('portalContainer');
-    this.catalogGrid = document.getElementById('catalogGrid');
-    this.categoryTabs = document.querySelectorAll('.tab-btn');
-    this.leaderboardBody = document.getElementById('leaderboardBody');
-    this.btnNavSound = document.getElementById('btnNavSound');
-    this.btnNavFullscreen = document.getElementById('btnNavFullscreen');
+  init() {
+    // 1. Preloader with synchronized 3D Spiral Deck convergence
+    this.preloader = new Preloader({
+      onReveal: () => {
+        if (this.spiralDeck) {
+          this.spiralDeck.startReveal();
+        }
+      },
+      onComplete: () => {
+        console.log('Suika Merge // Realm Initialized');
+      }
+    });
 
-    // Game Overlay elements
-    this.gameOverlay = document.getElementById('gameOverlay');
-    this.canvasElement = document.getElementById('gameCanvas');
-    this.hudScore = document.getElementById('hudScore');
-    this.hudBest = document.getElementById('hudBest');
-    this.hudCurrentImg = document.getElementById('hudCurrentImg');
-    this.btnStir = document.getElementById('btnStir');
-    this.btnSound = document.getElementById('btnSound');
-    this.btnSettings = document.getElementById('btnSettings');
-    this.btnBackToPortal = document.getElementById('btnBackToPortal');
+    // 3. Quest Modal (shared across Hero and chapters)
+    this.questModal = new QuestModal((acceptedQuest) => {
+      // Scroll to timer and activate quest
+      const timerSection = document.getElementById('ch-timer');
+      if (timerSection) {
+        timerSection.scrollIntoView({ behavior: 'smooth' });
+        const acceptBtn = timerSection.querySelector('#t-accept-btn');
+        if (acceptBtn) acceptBtn.click();
+      }
+    });
 
-    // Pre-game modal
-    this.pregameModal = document.getElementById('pregameModal');
-    this.pregameTitle = document.getElementById('pregameTitle');
-    this.pregameSubtitle = document.getElementById('pregameSubtitle');
-    this.pregameHeroIcon = document.getElementById('pregameHeroIcon');
-    this.shapeDescText = document.getElementById('shapeDescText');
-    this.shapeCards = document.querySelectorAll('.shape-card');
-    this.btnStartPlay = document.getElementById('btnStartPlay');
-    this.btnExitToPortal = document.getElementById('btnExitToPortal');
-
-    // Modals
-    this.modalPause = document.getElementById('modalPause');
-    this.btnResume = document.getElementById('btnResume');
-    this.btnRestart = document.getElementById('btnRestart');
-    this.btnHomeFromPause = document.getElementById('btnHomeFromPause');
-
-    this.modalGameOver = document.getElementById('modalGameOver');
-    this.finalScoreVal = document.getElementById('finalScoreVal');
-    this.newHighBanner = document.getElementById('newHighBanner');
-    this.highestCatImg = document.getElementById('highestCatImg');
-    this.highestCatName = document.getElementById('highestCatName');
-    this.btnPlayAgain = document.getElementById('btnPlayAgain');
-    this.btnHomeFromGameOver = document.getElementById('btnHomeFromGameOver');
-
-    // Update initial audio button icons
-    this.updateAudioIcons();
-  }
-
-  renderCatalog(filter = 'all') {
-    this.catalogGrid.innerHTML = '';
-
-    const games = filter === 'all'
-      ? GAME_CATALOG
-      : GAME_CATALOG.filter(g => g.category === filter);
-
-    for (const game of games) {
-      const card = document.createElement('div');
-      card.className = 'game-card';
-
-      const badgeClass = game.isPlayable ? 'badge-playable' : 'badge-coming';
-      const playBtn = game.isPlayable
-        ? `<button class="btn-card-play" data-game-id="${game.id}">PLAY NOW ▶</button>`
-        : `<button class="btn-card-disabled" disabled>SOON</button>`;
-
-      card.innerHTML = `
-        <div class="card-thumb">
-          <img src="${game.coverImage}" alt="${game.title}" loading="lazy"/>
-          <span class="card-badge ${badgeClass}">${game.badge}</span>
-          <span class="card-rating">${game.rating}</span>
+    // 4. Hero Section with Giant "RECLAIM YOUR LIFE" (Extended Hero Runway)
+    this.heroEl = document.createElement('section');
+    this.heroEl.id = 'hero';
+    this.heroEl.className = 'valk-hero';
+    this.heroEl.innerHTML = `
+      <div class="hero-sticky-stage">
+        <div class="hero-center-headline-wrap">
+          <h1 class="hero-reclaim-title">RECLAIM YOUR LIFE</h1>
         </div>
-        <div class="card-body">
-          <h3 class="card-title">${game.title}</h3>
-          <div class="card-tagline">${game.tagline}</div>
-          <p class="card-desc">${game.description}</p>
-          <div class="card-footer">
-            <span class="card-plays">${game.players}</span>
-            ${playBtn}
-          </div>
+
+        <div class="hero-scroll-prompt">
+          <span>SCROLL TO DESCEND</span>
+          <div class="prompt-line"></div>
         </div>
-      `;
+      </div>
+    `;
+    this.appEl.appendChild(this.heroEl);
 
-      if (game.isPlayable) {
-        card.querySelector('.btn-card-play').addEventListener('click', () => {
-          this.openGame(game.id);
-        });
+    // Responsive Title Fitting: scale font so "RECLAIM YOUR LIFE" spans edge-to-edge with exact 40px margins
+    const fitTitle = () => {
+      const title = this.heroEl.querySelector('.hero-reclaim-title');
+      if (!title) return;
+      const targetW = window.innerWidth - 80;
+      title.style.fontSize = '200px';
+      const scrollW = title.scrollWidth;
+      if (scrollW > 0) {
+        title.style.fontSize = `${(200 * targetW) / scrollW}px`;
       }
-
-      this.catalogGrid.appendChild(card);
-    }
-  }
-
-  renderLeaderboard() {
-    const list = LeaderboardManager.getLeaderboardData(this.activeGameId);
-    this.leaderboardBody.innerHTML = '';
-
-    list.forEach((entry, idx) => {
-      const row = document.createElement('tr');
-      if (entry.isUser) row.className = 'leaderboard-row-user';
-
-      row.innerHTML = `
-        <td>${entry.badge || idx + 1}</td>
-        <td>${entry.name}</td>
-        <td>${entry.score.toLocaleString()}</td>
-      `;
-      this.leaderboardBody.appendChild(row);
-    });
-  }
-
-  bindPortalEvents() {
-    // Category tabs
-    this.categoryTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        this.categoryTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        this.renderCatalog(tab.dataset.category);
-      });
-    });
-
-    // Audio toggles
-    const handleAudioToggle = () => {
-      this.soundManager.toggleMute();
-      this.updateAudioIcons();
     };
-    this.btnNavSound.addEventListener('click', handleAudioToggle);
-    this.btnSound.addEventListener('click', handleAudioToggle);
+    fitTitle();
+    window.addEventListener('resize', fitTitle);
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(fitTitle);
+    }
 
-    // Fullscreen toggle
-    this.btnNavFullscreen.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
+    // Dedicated Fixed Background Layer for Three.js Spiral Deck
+    this.deckLayerEl = document.createElement('div');
+    this.deckLayerEl.className = 'spiral-deck-fixed-layer';
+    this.deckLayerEl.id = 'spiral-deck-layer';
+    document.body.appendChild(this.deckLayerEl);
+
+    // Mount 3D Three.js Spiral Deck onto the fixed layer
+    this.spiralDeck = new SpiralDeck(this.deckLayerEl, (quest) => {
+      this.questModal.open(quest);
+    });
+
+    // Lab panel to tune spiral parameters
+    this.labPanel = new LabPanel(this.spiralDeck);
+
+    // 5. Header (Colontitle)
+    this.header = new Header({
+      onToggleLab: () => {
+        this.labPanel.toggle();
+      },
+      onNavigateChapter: (targetId) => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     });
 
-    // Hero "Play Now" CTA button
-    const heroBtn = document.getElementById('btnHeroPlay');
-    if (heroBtn) {
-      heroBtn.addEventListener('click', () => this.openGame('cat-merge'));
-    }
+    // 6. Chapters (01 to 08)
+    this.ch01 = new Chapter01Problem();
+    this.appEl.appendChild(this.ch01.el);
 
-    // Pre-game shape selector cards
-    this.shapeCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const type = card.dataset.shape;
-        this.selectShape(type);
-      });
+    this.ch02 = new Chapter02Timer();
+    this.appEl.appendChild(this.ch02.el);
+
+    this.ch03 = new Chapter03Journey();
+    this.appEl.appendChild(this.ch03.el);
+
+    this.ch04 = new Chapter04VoiceGarden();
+    this.appEl.appendChild(this.ch04.el);
+
+    this.ch05 = new Chapter05Totems();
+    this.appEl.appendChild(this.ch05.el);
+
+    this.ch06 = new Chapter06Stats();
+    this.appEl.appendChild(this.ch06.el);
+
+    this.ch07 = new Chapter07Guilds();
+    this.appEl.appendChild(this.ch07.el);
+
+    this.ch08 = new Chapter08Waitlist();
+    this.appEl.appendChild(this.ch08.el);
+
+    // 7. Footer
+    this.footer = new Footer(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Start Game from pre-game modal
-    this.btnStartPlay.addEventListener('click', () => {
-      this.startGame();
-    });
-
-    // Exit pre-game to portal
-    this.btnExitToPortal.addEventListener('click', () => {
-      this.closeGame();
-    });
-    this.btnBackToPortal.addEventListener('click', () => {
-      this.closeGame();
-    });
-
-    // Stir button
-    this.btnStir.addEventListener('click', () => {
-      if (this.engine) this.engine.stirContainer();
-    });
-
-    // Settings / Pause button
-    this.btnSettings.addEventListener('click', () => {
-      if (this.engine) {
-        this.engine.pause();
-        this.modalPause.classList.remove('hidden');
+    // 8. Smooth Momentum Scroll & Chapter Spy
+    this.smoothScroll = new SmoothScroll({
+      onChapterChange: (label, title) => {
+        this.header.updateChapter(label, title);
       }
     });
 
-    // Resume button
-    this.btnResume.addEventListener('click', () => {
-      this.modalPause.classList.add('hidden');
-      if (this.engine) this.engine.resume();
-    });
+    // Window scroll handler: parallax title & drive spiral deck merge
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight || 1;
+      const progress = scrollY / vh;
 
-    // Restart button
-    this.btnRestart.addEventListener('click', () => {
-      this.modalPause.classList.add('hidden');
-      if (this.engine) this.engine.startNewGame();
-    });
-
-    // Home from pause
-    this.btnHomeFromPause.addEventListener('click', () => {
-      this.modalPause.classList.add('hidden');
-      this.closeGame();
-    });
-
-    // Play again
-    this.btnPlayAgain.addEventListener('click', () => {
-      this.modalGameOver.classList.add('hidden');
-      if (this.engine) this.engine.startNewGame();
-    });
-
-    // Home from game over
-    this.btnHomeFromGameOver.addEventListener('click', () => {
-      this.modalGameOver.classList.add('hidden');
-      this.closeGame();
-    });
-  }
-
-  selectShape(type) {
-    this.activeContainerType = type;
-    localStorage.setItem('suika_selected_shape', type);
-
-    this.shapeCards.forEach(c => {
-      if (c.dataset.shape === type) {
-        c.classList.add('active');
-      } else {
-        c.classList.remove('active');
+      if (this.spiralDeck) {
+        this.spiralDeck.onPageScroll(progress);
       }
-    });
 
-    const meta = ContainerMeta[type];
-    if (meta) {
-      this.shapeDescText.textContent = meta.tagline;
-    }
-  }
+      const title = document.querySelector('.hero-reclaim-title');
+      const prompt = document.querySelector('.hero-scroll-prompt');
+      if (title) {
+        // Starts fading as user scrolls toward Chapter 01
+        const offset = Math.max(0, scrollY - vh * 0.2);
+        const fade = Math.max(0, 1 - offset / (vh * 0.45));
+        const translateY = -offset * 0.28;
+        title.style.opacity = fade.toFixed(2);
+        title.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+        if (prompt) {
+          prompt.style.opacity = fade.toFixed(2);
+        }
+      }
+    }, { passive: true });
 
-  openGame(gameId) {
-    const game = GAME_CATALOG.find(g => g.id === gameId);
-    if (!game || !game.isPlayable) return;
-
-    this.activeGameId = game.id;
-    this.activeTheme = game.theme;
-
-    // Show game overlay
-    this.gameOverlay.classList.remove('hidden');
-
-    // Setup pre-game modal
-    this.pregameTitle.textContent = game.title.toUpperCase();
-    this.pregameSubtitle.textContent = game.theme.subtitle;
-    this.pregameHeroIcon.src = game.theme.getImageUrl(0);
-
-    this.selectShape(this.activeContainerType);
-    this.pregameModal.classList.remove('hidden');
-
-    // Create or reconfigure engine
-    if (!this.engine) {
-      this.engine = new GameEngine(this.activeTheme, this.activeContainerType, this.soundManager);
-      this.setupEngineCallbacks();
-      this.gameCanvas = new GameCanvas(this.canvasElement, this.engine);
-    } else {
-      this.engine.setTheme(this.activeTheme);
-      this.engine.setContainerType(this.activeContainerType, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
-      this.gameCanvas.initImages();
-      this.gameCanvas.resize();
-    }
-
-    this.gameCanvas.start();
-  }
-
-  setupEngineCallbacks() {
-    this.engine.onScoreChanged = (score, high) => {
-      this.hudScore.textContent = score.toLocaleString();
-      this.hudBest.textContent = high.toLocaleString();
+    // Global audio unlock on first user interaction
+    const unlockAudio = () => {
+      sound.ensureContext();
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
     };
-
-    this.engine.onCurrentMaxBallChanged = (level) => {
-      this.hudCurrentImg.src = this.activeTheme.getImageUrl(level);
-      this.hudCurrentImg.classList.add('pop');
-      setTimeout(() => this.hudCurrentImg.classList.remove('pop'), 180);
-    };
-
-    this.engine.onGameOver = (finalScore, highestLvl, isNewHigh) => {
-      this.finalScoreVal.textContent = finalScore.toLocaleString();
-      this.newHighBanner.style.display = isNewHigh ? 'block' : 'none';
-
-      this.highestCatImg.src = this.activeTheme.getImageUrl(highestLvl);
-      this.highestCatName.textContent = this.activeTheme.names[highestLvl] || `Level ${highestLvl}`;
-
-      this.modalGameOver.classList.remove('hidden');
-      this.renderLeaderboard();
-    };
-
-    this.engine.onCombo = (combo) => {
-      if (navigator.vibrate) navigator.vibrate(30);
-    };
-  }
-
-  startGame() {
-    this.pregameModal.classList.add('hidden');
-    this.engine.setContainerType(this.activeContainerType, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
-    this.gameCanvas.resize();
-    this.engine.startNewGame();
-  }
-
-  closeGame() {
-    if (this.engine) {
-      this.engine.pause();
-    }
-    this.modalPause.classList.add('hidden');
-    this.modalGameOver.classList.add('hidden');
-    this.pregameModal.classList.add('hidden');
-    this.gameOverlay.classList.add('hidden');
-
-    this.renderLeaderboard();
-  }
-
-  updateAudioIcons() {
-    const icon = this.soundManager.isMuted ? '🔇' : '🔊';
-    if (this.btnNavSound) this.btnNavSound.textContent = icon;
-    if (this.btnSound) this.btnSound.textContent = icon;
+    window.addEventListener('click', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+    window.addEventListener('touchstart', unlockAudio);
   }
 }
 
-// Bootstrap on DOM loaded
+// Instantiate on DOM load
 window.addEventListener('DOMContentLoaded', () => {
-  window.app = new SuikaPortalApp();
+  new App();
 });

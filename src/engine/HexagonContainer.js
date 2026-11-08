@@ -210,3 +210,4 @@ export class HexagonContainer {
     ctx.restore();
   }
 }
+
