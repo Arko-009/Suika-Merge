@@ -44,9 +44,8 @@ export class Preloader {
     this.ribbons = [];
     this.ringInner = null;
     this.ringOuter = null;
-    this.ringSparks = [];
-    this.stardustPoints = null;
-    this.stardustData = [];
+    this.auraMesh = null;
+    this.auraMaterial = null;
     this.laserSlash = null;
     this.shockwave = null;
     this.holoCardsGroup = null;
@@ -78,10 +77,6 @@ export class Preloader {
           <div class="preloader-hud-bar-wrap">
             <div class="preloader-hud-bar-fill" id="hud-bar-fill"></div>
           </div>
-          <div class="preloader-hud-row">
-            <span class="hud-status" id="hud-status">INITIATING QUANTUM HARMONICS</span>
-            <span class="hud-pct" id="hud-pct">0%</span>
-          </div>
         </div>
 
         <button class="preloader-enter-btn" id="preloader-skip-btn" aria-label="Enter Realm">
@@ -97,8 +92,6 @@ export class Preloader {
 
     this.canvas = this.container.querySelector('#preloader-3d-canvas');
     this.barFill = this.container.querySelector('#hud-bar-fill');
-    this.statusText = this.container.querySelector('#hud-status');
-    this.pctText = this.container.querySelector('#hud-pct');
     this.skipBtn = this.container.querySelector('#preloader-skip-btn');
     this.flashEl = this.container.querySelector('#preloader-flash');
     this.hud = this.container.querySelector('#preloader-hud');
@@ -231,11 +224,11 @@ export class Preloader {
       fragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uMorph: { value: 1.0 },
+        uMorph: { value: 0.5 },
         uOpacity: { value: 1.0 },
-        uColorPulp: { value: new THREE.Color(0xf4284d) }, // Rich watermelon crimson
-        uColorRind: { value: new THREE.Color(0xa5de41) }, // Luminous lime rind
-        uColorCore: { value: new THREE.Color(0xff6036) }  // Vibrant coral core
+        uColorPulp: { value: new THREE.Color(0x0a3d2c) }, // Initial nocturnal emerald pulp
+        uColorRind: { value: new THREE.Color(0x76c828) }, // Initial lime rind
+        uColorCore: { value: new THREE.Color(0x064e3b) }  // Initial deep jade core
       },
       transparent: true,
       side: THREE.FrontSide
@@ -324,84 +317,43 @@ export class Preloader {
     this.ringOuter.rotation.y = -Math.PI * 0.15;
     this.scene.add(this.ringOuter);
 
-    // Spark nodes that run along the orbital rings
-    const sparkGeom = new THREE.SphereGeometry(0.045, 8, 8);
-    const sparkMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
+    // -----------------------------------------------------------------
+    // 4. ATMOSPHERIC ENVIRONMENTAL AURA (Progress-Driven Cosmic Field)
+    // -----------------------------------------------------------------
+    const auraGeom = new THREE.PlaneGeometry(16, 16);
+    const auraVertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+    const auraFragmentShader = `
+      uniform vec3 uColorAura;
+      uniform float uAuraAlpha;
+      varying vec2 vUv;
+      void main() {
+        vec2 center = vUv - vec2(0.5);
+        float d = length(center) * 2.0;
+        float falloff = smoothstep(1.0, 0.0, d);
+        falloff = pow(falloff, 2.4);
+        gl_FragColor = vec4(uColorAura, falloff * uAuraAlpha);
+      }
+    `;
+    this.auraMaterial = new THREE.ShaderMaterial({
+      vertexShader: auraVertexShader,
+      fragmentShader: auraFragmentShader,
+      uniforms: {
+        uColorAura: { value: new THREE.Color(0x063e2e) },
+        uAuraAlpha: { value: 0.18 }
+      },
+      transparent: true,
+      depthWrite: false,
       blending: THREE.AdditiveBlending
     });
-    for (let i = 0; i < 6; i++) {
-      const sp = new THREE.Mesh(sparkGeom, sparkMat);
-      sp.visible = false;
-      this.scene.add(sp);
-      this.ringSparks.push(sp);
-    }
-
-    // -----------------------------------------------------------------
-    // 4. 1,200 STARDUST VORTEX PARTICLES (Fluid Embers)
-    // -----------------------------------------------------------------
-    const particleCount = 1200;
-    const posArray = new Float32Array(particleCount * 3);
-    const colArray = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount; i++) {
-      const rad = 1.6 + Math.pow(Math.random(), 1.5) * 4.5;
-      const angle = Math.random() * Math.PI * 2;
-      const height = (Math.random() - 0.5) * 3.8;
-
-      posArray[i * 3] = Math.cos(angle) * rad;
-      posArray[i * 3 + 1] = height;
-      posArray[i * 3 + 2] = Math.sin(angle) * rad;
-
-      // Color mix: 60% electric lime, 30% ruby coral, 10% pure diamond white
-      const rnd = Math.random();
-      const c = rnd > 0.4 ? new THREE.Color(0xa5de41) : (rnd > 0.1 ? new THREE.Color(0xfc7c35) : new THREE.Color(0xffffff));
-      colArray[i * 3] = c.r;
-      colArray[i * 3 + 1] = c.g;
-      colArray[i * 3 + 2] = c.b;
-
-      this.stardustData.push({
-        baseRadius: rad,
-        baseAngle: angle,
-        baseY: height,
-        angularSpeed: (0.4 + Math.random() * 0.8) * (rad < 2.5 ? 1.5 : 0.8),
-        yVel: (Math.random() - 0.5) * 0.3,
-        explodeAngle: angle,
-        explodeSpeed: 3.5 + Math.random() * 5.0
-      });
-    }
-
-    const stardustGeom = new THREE.BufferGeometry();
-    stardustGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    stardustGeom.setAttribute('color', new THREE.BufferAttribute(colArray, 3));
-
-    // Soft Gaussian point texture
-    const pCanvas = document.createElement('canvas');
-    pCanvas.width = 32;
-    pCanvas.height = 32;
-    const pCtx = pCanvas.getContext('2d');
-    const grad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.3, 'rgba(255,255,255,0.7)');
-    grad.addColorStop(0.7, 'rgba(255,255,255,0.15)');
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
-    pCtx.fillStyle = grad;
-    pCtx.fillRect(0, 0, 32, 32);
-
-    const pointTexture = new THREE.CanvasTexture(pCanvas);
-
-    const stardustMat = new THREE.PointsMaterial({
-      size: 0.12,
-      map: pointTexture,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.85,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-
-    this.stardustPoints = new THREE.Points(stardustGeom, stardustMat);
-    this.scene.add(this.stardustPoints);
+    this.auraMesh = new THREE.Mesh(auraGeom, this.auraMaterial);
+    this.auraMesh.position.z = -2.4;
+    this.scene.add(this.auraMesh);
 
     // -----------------------------------------------------------------
     // 5. KATANA LASER CLEAVE & SHOCKWAVE (Frame 5 Supernova Climax)
@@ -486,17 +438,47 @@ export class Preloader {
     this.updateHUD(t, progress);
 
     // -----------------------------------------------------------------
-    // 1. CORE LIQUID METASPHERE ANIMATION
+    // 1. CORE LIQUID METASPHERE ANIMATION & CHROMATIC EVOLUTION
     // -----------------------------------------------------------------
     if (this.coreMaterial && this.coreMesh) {
       this.coreMaterial.uniforms.uTime.value = elapsed;
 
       // Gentle organic breathing & rotation
-      this.coreMesh.rotation.y = elapsed * 0.95;
+      this.coreMesh.rotation.y = elapsed * (0.85 + progress * 0.35);
       this.coreMesh.rotation.x = Math.sin(elapsed * 0.7) * 0.15;
 
-      const breathe = 1.0 + 0.035 * Math.sin(elapsed * 3.5);
-      this.coreMesh.scale.set(breathe, breathe, breathe);
+      const breathePulse = 1.0 + (0.03 + progress * 0.03) * Math.sin(elapsed * (3.0 + progress * 2.5));
+      this.coreMesh.scale.set(breathePulse, breathePulse, breathePulse);
+
+      // Environmental & Chromatic Progress:
+      // Stage 1 (0 -> 0.45): Nocturnal Emerald Jade -> Luminous Cyber Lime
+      // Stage 2 (0.45 -> 0.8): Cyber Lime -> Radiant Amber Gold
+      // Stage 3 (0.8 -> 1.0): Radiant Amber -> Watermelon Ruby Crimson
+      const cEmerald = new THREE.Color(0x0a3d2c);
+      const cLime = new THREE.Color(0xa5de41);
+      const cAmber = new THREE.Color(0xfc7c35);
+      const cRuby = new THREE.Color(0xf4284d);
+      const cCoreStart = new THREE.Color(0x064e3b);
+      const cCoreMid = new THREE.Color(0x2ee59d);
+      const cCoreEnd = new THREE.Color(0xff6036);
+
+      const normP = Math.min(1.0, t / 2.5); // Charge completes at katana slice
+      if (normP < 0.45) {
+        const subP = normP / 0.45;
+        this.coreMaterial.uniforms.uColorPulp.value.lerpColors(cEmerald, cLime, subP);
+        this.coreMaterial.uniforms.uColorCore.value.lerpColors(cCoreStart, cCoreMid, subP);
+      } else if (normP < 0.8) {
+        const subP = (normP - 0.45) / 0.35;
+        this.coreMaterial.uniforms.uColorPulp.value.lerpColors(cLime, cAmber, subP);
+        this.coreMaterial.uniforms.uColorCore.value.lerpColors(cCoreMid, cCoreEnd, subP);
+      } else {
+        const subP = (normP - 0.8) / 0.2;
+        this.coreMaterial.uniforms.uColorPulp.value.lerpColors(cAmber, cRuby, subP);
+        this.coreMaterial.uniforms.uColorCore.value.lerpColors(cCoreEnd, cRuby, subP);
+      }
+
+      // Morph ripple wave intensity increases with progress
+      this.coreMaterial.uniforms.uMorph.value = 0.5 + normP * 0.9;
 
       // Core dissolution after Katana Cleave (t >= 2.5s)
       if (t >= 2.5) {
@@ -506,15 +488,55 @@ export class Preloader {
       }
     }
 
+    // Dynamic Point Light Intensity & Color shift with charge
+    if (this.bloomLight) {
+      const normP = Math.min(1.0, t / 2.5);
+      this.bloomLight.intensity = 0.9 + normP * 2.8;
+      if (normP < 0.5) {
+        this.bloomLight.color.lerpColors(new THREE.Color(0x2ee59d), new THREE.Color(0xa5de41), normP * 2);
+      } else {
+        this.bloomLight.color.lerpColors(new THREE.Color(0xa5de41), new THREE.Color(0xff455a), (normP - 0.5) * 2);
+      }
+    }
+
+    // Atmospheric Aura Environmental Progress
+    if (this.auraMaterial && this.auraMesh) {
+      const normP = Math.min(1.0, t / 2.5);
+      if (t < 2.5) {
+        this.auraMaterial.uniforms.uAuraAlpha.value = 0.16 + normP * 0.38 + 0.04 * Math.sin(elapsed * 2.5);
+        if (normP < 0.5) {
+          this.auraMaterial.uniforms.uColorAura.value.lerpColors(
+            new THREE.Color(0x063e2e),
+            new THREE.Color(0x1a7a4a),
+            normP * 2
+          );
+        } else {
+          this.auraMaterial.uniforms.uColorAura.value.lerpColors(
+            new THREE.Color(0x1a7a4a),
+            new THREE.Color(0x8a182b),
+            (normP - 0.5) * 2
+          );
+        }
+        const auraScale = 1.0 + normP * 0.3 + 0.02 * Math.sin(elapsed * 2.0);
+        this.auraMesh.scale.set(auraScale, auraScale, 1.0);
+      } else {
+        // Disperse aura with supernova blast
+        const burstT = (t - 2.5) / 0.6;
+        this.auraMaterial.uniforms.uAuraAlpha.value = Math.max(0, 0.54 * (1.0 - burstT));
+        const auraScale = 1.3 + burstT * 1.5;
+        this.auraMesh.scale.set(auraScale, auraScale, 1.0);
+      }
+    }
+
     // -----------------------------------------------------------------
     // 2. FIBER-OPTIC SILK ENERGY RIBBONS
     // -----------------------------------------------------------------
     if (this.ribbonGroup) {
-      this.ribbonGroup.rotation.y = -elapsed * 0.65;
+      this.ribbonGroup.rotation.y = -elapsed * (0.65 + progress * 0.25);
       this.ribbonGroup.rotation.z = Math.sin(elapsed * 0.5) * 0.18;
 
-      if (t >= 0.8 && t < 2.5) {
-        const ribbonAlpha = Math.min(0.85, (t - 0.8) / 0.8);
+      if (t >= 0.6 && t < 2.5) {
+        const ribbonAlpha = Math.min(0.85, (t - 0.6) / 0.8);
         this.ribbons.forEach(r => r.material.opacity = ribbonAlpha);
       } else if (t >= 2.5) {
         this.ribbons.forEach(r => r.material.opacity *= 0.88);
@@ -524,64 +546,19 @@ export class Preloader {
     // -----------------------------------------------------------------
     // 3. PRISMATIC GRAVITATIONAL RINGS
     // -----------------------------------------------------------------
-    if (t >= 1.0 && t < 2.5) {
-      const ringAlpha = Math.min(0.85, (t - 1.0) / 0.7);
+    if (t >= 0.8 && t < 2.5) {
+      const ringAlpha = Math.min(0.85, (t - 0.8) / 0.7);
       if (this.ringInner) {
-        this.ringInner.material.opacity = ringAlpha;
-        this.ringInner.rotation.z += 0.025;
+        this.ringInner.material.opacity = ringAlpha * (0.85 + 0.15 * Math.sin(elapsed * 4.0));
+        this.ringInner.rotation.z += 0.022 + progress * 0.015;
       }
       if (this.ringOuter) {
-        this.ringOuter.material.opacity = ringAlpha * 0.75;
-        this.ringOuter.rotation.z -= 0.018;
+        this.ringOuter.material.opacity = ringAlpha * 0.75 * (0.85 + 0.15 * Math.cos(elapsed * 4.0));
+        this.ringOuter.rotation.z -= 0.016 + progress * 0.012;
       }
-
-      // Position spark nodes along rings
-      this.ringSparks.forEach((sp, idx) => {
-        sp.visible = true;
-        const angle = elapsed * (1.8 + idx * 0.3) + idx * (Math.PI / 3);
-        const rad = idx % 2 === 0 ? 2.38 : 2.78;
-        const parentRot = idx % 2 === 0 ? Math.PI * 0.46 : Math.PI * 0.38;
-
-        const lx = Math.cos(angle) * rad;
-        const ly = Math.sin(angle) * rad;
-        sp.position.set(lx, ly * Math.cos(parentRot), ly * Math.sin(parentRot));
-      });
     } else if (t >= 2.5) {
       if (this.ringInner) this.ringInner.material.opacity *= 0.85;
       if (this.ringOuter) this.ringOuter.material.opacity *= 0.85;
-      this.ringSparks.forEach(sp => sp.visible = false);
-    }
-
-    // -----------------------------------------------------------------
-    // 4. STARDUST VORTEX & SUPERNOVA EXPANSION
-    // -----------------------------------------------------------------
-    if (this.stardustPoints) {
-      const posAttr = this.stardustPoints.geometry.attributes.position;
-      const positions = posAttr.array;
-
-      for (let i = 0; i < this.stardustData.length; i++) {
-        const sd = this.stardustData[i];
-
-        if (t < 2.5) {
-          // Normal harmonic vortex swirl
-          sd.baseAngle += sd.angularSpeed * 0.018;
-          positions[i * 3] = Math.cos(sd.baseAngle) * sd.baseRadius;
-          positions[i * 3 + 1] = sd.baseY + Math.sin(elapsed * 2.0 + i) * 0.15;
-          positions[i * 3 + 2] = Math.sin(sd.baseAngle) * sd.baseRadius;
-        } else {
-          // Supernova explosive dispersal
-          const burstT = (t - 2.5);
-          const r = sd.baseRadius + sd.explodeSpeed * burstT;
-          positions[i * 3] = Math.cos(sd.explodeAngle) * r;
-          positions[i * 3 + 1] = sd.baseY + (sd.yVel * 8.0) * burstT;
-          positions[i * 3 + 2] = Math.sin(sd.explodeAngle) * r;
-        }
-      }
-      posAttr.needsUpdate = true;
-
-      if (t >= 2.5) {
-        this.stardustPoints.material.opacity = Math.max(0, 0.85 - (t - 2.5) * 0.7);
-      }
     }
 
     // -----------------------------------------------------------------
@@ -659,21 +636,6 @@ export class Preloader {
   updateHUD(t, progress) {
     const pct = Math.min(100, Math.round(progress * 100));
     if (this.barFill) this.barFill.style.width = `${pct}%`;
-    if (this.pctText) this.pctText.textContent = `${pct}%`;
-
-    if (this.statusText) {
-      if (t < 0.9) {
-        this.statusText.textContent = 'AWAKENING THE CORE // LIQUID HARMONICS';
-      } else if (t < 1.8) {
-        this.statusText.textContent = 'FIBER-OPTIC RESONANCE // ORBITAL SYNTHESIS';
-      } else if (t < 2.5) {
-        this.statusText.textContent = 'STARDUST VORTEX CHARGE // CRITICAL DETONATION';
-      } else if (t < 3.2) {
-        this.statusText.textContent = 'SUPERNOVA CLEAVE // ASCENDING SPIRAL DECK';
-      } else {
-        this.statusText.textContent = 'REALM BLOOM // WELCOME TO VALKYRIE';
-      }
-    }
   }
 
   triggerComplete() {
@@ -737,6 +699,11 @@ export class Preloader {
     this.coreMesh = null;
     this.coreMaterial = null;
     this.ribbonGroup = null;
-    this.stardustPoints = null;
+    this.ringInner = null;
+    this.ringOuter = null;
+    this.auraMesh = null;
+    this.auraMaterial = null;
+    this.laserSlash = null;
+    this.shockwave = null;
   }
 }
