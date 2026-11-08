@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bgb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140f08"/>
+      <stop offset="50%" stop-color="#24190c"/>
+      <stop offset="100%" stop-color="#0a0704"/>
+    </linearGradient>
+    <linearGradient id="neonb" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e09f3e"/>
+      <stop offset="50%" stop-color="#fff3b0"/>
+      <stop offset="100%" stop-color="#9e2a2b"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bgb)"/>
+  <circle cx="300" cy="190" r="140" fill="none" stroke="url(#neonb)" stroke-width="8" opacity="0.8"/>
+  <circle cx="300" cy="195" r="70" fill="#2d2112" stroke="#e09f3e" stroke-width="4"/>
+  <text x="300" y="218" font-size="60" text-anchor="middle">🦫</text>
+  <circle cx="215" cy="160" r="35" fill="#2d2112" stroke="#fff3b0" stroke-width="3"/>
+  <text x="215" y="172" font-size="30" text-anchor="middle">🍊</text>
+  <circle cx="385" cy="170" r="45" fill="#2d2112" stroke="#9e2a2b" stroke-width="3"/>
+  <text x="385" y="185" font-size="38" text-anchor="middle">🐊</text>
+  <text x="300" y="340" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">CAPYBARA MERGE</text>
+  <text x="300" y="370" font-family="'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#e09f3e" text-anchor="middle" letter-spacing="4">ZEN WATER LAB</text>
+</svg>

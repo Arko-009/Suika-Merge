@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bgc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080614"/>
+      <stop offset="50%" stop-color="#140d2a"/>
+      <stop offset="100%" stop-color="#04020a"/>
+    </linearGradient>
+    <linearGradient id="neonc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9d4edd"/>
+      <stop offset="50%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#ff70a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bgc)"/>
+  <circle cx="300" cy="190" r="140" fill="none" stroke="url(#neonc)" stroke-width="8" opacity="0.8"/>
+  <circle cx="300" cy="195" r="70" fill="#1b1236" stroke="#9d4edd" stroke-width="4"/>
+  <text x="300" y="218" font-size="60" text-anchor="middle">🪐</text>
+  <circle cx="215" cy="160" r="35" fill="#1b1236" stroke="#00E5FF" stroke-width="3"/>
+  <text x="215" y="172" font-size="30" text-anchor="middle">🌙</text>
+  <circle cx="385" cy="170" r="45" fill="#1b1236" stroke="#ff70a6" stroke-width="3"/>
+  <text x="385" y="185" font-size="38" text-anchor="middle">☀️</text>
+  <text x="300" y="340" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">COSMIC MERGE</text>
+  <text x="300" y="370" font-family="'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#00E5FF" text-anchor="middle" letter-spacing="4">SOLAR ODYSSEY</text>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "name": "suika-merge-arcade",
+  "version": "1.0.0",
+  "description": "Premium browser gaming portal for Suika Merge games featuring Position-Based Dynamics physics and multiple container shapes",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

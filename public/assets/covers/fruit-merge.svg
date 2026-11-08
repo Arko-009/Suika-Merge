@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bgf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a120c"/>
+      <stop offset="50%" stop-color="#122416"/>
+      <stop offset="100%" stop-color="#050a06"/>
+    </linearGradient>
+    <linearGradient id="neonf" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FF66"/>
+      <stop offset="50%" stop-color="#FFDD00"/>
+      <stop offset="100%" stop-color="#FF0055"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bgf)"/>
+  <circle cx="300" cy="190" r="140" fill="none" stroke="url(#neonf)" stroke-width="8" opacity="0.8"/>
+  <circle cx="300" cy="200" r="75" fill="#1b2e1e" stroke="#00FF66" stroke-width="4"/>
+  <text x="300" y="225" font-size="64" text-anchor="middle">🍉</text>
+  <circle cx="210" cy="170" r="35" fill="#1b2e1e" stroke="#FF0055" stroke-width="3"/>
+  <text x="210" y="182" font-size="30" text-anchor="middle">🍒</text>
+  <circle cx="380" cy="160" r="45" fill="#1b2e1e" stroke="#FF7700" stroke-width="3"/>
+  <text x="380" y="175" font-size="40" text-anchor="middle">🍊</text>
+  <text x="300" y="340" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">SUIKA CLASSIC</text>
+  <text x="300" y="370" font-family="'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#00FF66" text-anchor="middle" letter-spacing="4">FRUIT MERGE LAB</text>
+</svg>

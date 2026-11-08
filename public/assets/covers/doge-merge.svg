@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bgd" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141208"/>
+      <stop offset="50%" stop-color="#26210e"/>
+      <stop offset="100%" stop-color="#0a0803"/>
+    </linearGradient>
+    <linearGradient id="neond" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FFA500"/>
+      <stop offset="100%" stop-color="#FF4500"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bgd)"/>
+  <circle cx="300" cy="190" r="140" fill="none" stroke="url(#neond)" stroke-width="8" opacity="0.8"/>
+  <circle cx="300" cy="195" r="70" fill="#2d2712" stroke="#FFD700" stroke-width="4"/>
+  <text x="300" y="218" font-size="60" text-anchor="middle">🐕</text>
+  <circle cx="215" cy="160" r="35" fill="#2d2712" stroke="#FFA500" stroke-width="3"/>
+  <text x="215" y="172" font-size="30" text-anchor="middle">🦴</text>
+  <circle cx="385" cy="170" r="45" fill="#2d2712" stroke="#FF4500" stroke-width="3"/>
+  <text x="385" y="185" font-size="38" text-anchor="middle">🚀</text>
+  <text x="300" y="340" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">DOGE &amp; MEMES</text>
+  <text x="300" y="370" font-family="'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#FFD700" text-anchor="middle" letter-spacing="4">TO THE MOON</text>
+</svg>
