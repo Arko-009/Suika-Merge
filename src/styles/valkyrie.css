@@ -593,31 +593,9 @@ button, a, .problem-card, .milestone-node, .totem-pill-btn, .voice-track-tab, .s
   z-index: 1;
 }
 
-.hero-center-headline-wrap {
-  position: absolute;
-  top: 14%;
-  left: 0;
-  width: 100%;
-  padding: 0 40px;
-  box-sizing: border-box;
-  text-align: center;
-  pointer-events: none;
-  z-index: 2;
-}
-
+.hero-center-headline-wrap,
 .hero-reclaim-title {
-  font-family: var(--font-serif);
-  font-size: clamp(48px, 10.5vw, 220px);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  color: #ffffff;
-  text-transform: uppercase;
-  line-height: 0.88;
-  white-space: nowrap;
-  margin: 0 auto;
-  display: inline-block;
-  will-change: transform, opacity;
-  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+  display: none !important;
 }
 
 .hero-scroll-prompt {

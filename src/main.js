@@ -51,16 +51,12 @@ class App {
       }
     });
 
-    // 4. Hero Section with Giant "RECLAIM YOUR LIFE" (Extended Hero Runway)
+    // 4. Hero Section (Extended Hero Runway)
     this.heroEl = document.createElement('section');
     this.heroEl.id = 'hero';
     this.heroEl.className = 'valk-hero';
     this.heroEl.innerHTML = `
       <div class="hero-sticky-stage">
-        <div class="hero-center-headline-wrap">
-          <h1 class="hero-reclaim-title">RECLAIM YOUR LIFE</h1>
-        </div>
-
         <div class="hero-scroll-prompt">
           <span>SCROLL TO DESCEND</span>
           <div class="prompt-line"></div>
@@ -68,23 +64,6 @@ class App {
       </div>
     `;
     this.appEl.appendChild(this.heroEl);
-
-    // Responsive Title Fitting: scale font so "RECLAIM YOUR LIFE" spans edge-to-edge with exact 40px margins
-    const fitTitle = () => {
-      const title = this.heroEl.querySelector('.hero-reclaim-title');
-      if (!title) return;
-      const targetW = window.innerWidth - 80;
-      title.style.fontSize = '200px';
-      const scrollW = title.scrollWidth;
-      if (scrollW > 0) {
-        title.style.fontSize = `${(200 * targetW) / scrollW}px`;
-      }
-    };
-    fitTitle();
-    window.addEventListener('resize', fitTitle);
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(fitTitle);
-    }
 
     // Dedicated Fixed Background Layer for Three.js Spiral Deck
     this.deckLayerEl = document.createElement('div');
@@ -160,18 +139,11 @@ class App {
         this.spiralDeck.onPageScroll(progress);
       }
 
-      const title = document.querySelector('.hero-reclaim-title');
       const prompt = document.querySelector('.hero-scroll-prompt');
-      if (title) {
-        // Starts fading as user scrolls toward Chapter 01
+      if (prompt) {
         const offset = Math.max(0, scrollY - vh * 0.2);
         const fade = Math.max(0, 1 - offset / (vh * 0.45));
-        const translateY = -offset * 0.28;
-        title.style.opacity = fade.toFixed(2);
-        title.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
-        if (prompt) {
-          prompt.style.opacity = fade.toFixed(2);
-        }
+        prompt.style.opacity = fade.toFixed(2);
       }
     }, { passive: true });
 
