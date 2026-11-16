@@ -1,213 +1,258 @@
 import { sound } from '../sound/SoundEngine.js';
 
+/**
+ * GRAIL // CHAPTER 02: ABOUT TIMER
+ * 1:1 Frame-by-frame exact match of grail-app.com motion design:
+ * - Fullscreen dynamic ink-reveal radial mask (--ink, --inkfill)
+ * - Giant 24vw typography atmospheric ticking clock (47:59:58)
+ * - 3D perspective floating phone swoop with blur, tilt, and de-blur (--phone)
+ * - Staggered rising words headline (--hl, --i)
+ * - Left-to-right expanding hairline divider (--dgrow)
+ * - Two-column editorial copy with radial ink reveal
+ * - Smoothstep transition from Chapter 01 through Section 3 runway into Chapter 02 and Chapter 03
+ */
 export class Chapter02Timer {
   constructor() {
     this.el = null;
-    this.remainingSeconds = 48 * 3600;
-    this.isRunning = true;
-    this.inkRafId = null;
-    this.ripples = [];
+    this.totalSeconds = 47 * 3600 + 59 * 60 + 58;
+    this.digitElements = [];
+    this.phoneTimerPill = null;
+    this.timerInterval = null;
+    this.boundScroll = null;
     this.init();
   }
 
   init() {
-    this.el = document.createElement('section');
-    this.el.id = 'ch-timer';
-    this.el.className = 'valk-section ch-timer';
+    this.el = document.createElement('div');
+    this.el.className = 'grail-timer-wrapper';
     this.el.innerHTML = `
-      <div class="timer-canvas-bg" id="timer-ink-canvas"></div>
-      
-      <div class="section-container">
-        <div class="colontitle-bar">
-          <div class="colontitle-tag">
-            <span class="colon-dot"></span>
-            <span>ABOUT TIMER</span>
-          </div>
-          <span class="colon-num">CHAPTER 02</span>
-        </div>
+      <!-- Section 3 Transition Runway (Scroll spacer between Ch 01 and Ch 02) -->
+      <section class="grail-section3" aria-hidden="true"></section>
 
-        <div class="timer-layout">
-          <div class="timer-copy">
-            <span class="timer-kicker">THE TICKING CRUCIBLE</span>
-            <h2 class="timer-heading">Quest accepted.<br><em>Clock’s running.</em></h2>
-            <p class="timer-desc">
-              Now there’s a clock on it. Forty-eight hours to go do the thing, because “later” is how every single one of these ambitions quietly dies.
-            </p>
-            <p class="timer-sub-desc">
-              When the sand runs out, the quest expires uncompleted. The pressure isn’t artificial—it’s the antidote to procrastination.
-            </p>
+      <!-- Section 4 Anchor for Chapter 02 (Spy & Scroll Target) -->
+      <section id="ch-timer" class="grail-section4" aria-label="Chapter 02: About Timer">
+        <!-- 1. Fullscreen Atmospheric Ink Background -->
+        <div class="grail-accept-bg" id="grail-accept-bg" aria-hidden="true"></div>
 
-            <div class="timer-actions">
-              <button class="timer-accept-btn" id="t-accept-btn">
-                <span class="pulse-ring"></span>
-                <span>ACCEPT NEW 48H QUEST</span>
-                <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-                  <path d="M8 2a6 6 0 100 12A6 6 0 008 2zm-.5 3h1v3.25l2.5 1.5-.5.87-3-1.82V5z"/>
-                </svg>
-              </button>
+        <!-- 2. Giant Atmospheric Countdown Clock Stage -->
+        <div class="grail-clock-stage" id="grail-clock-stage" aria-hidden="true">
+          <div class="grail-clock-num">
+            <div class="grail-clock-group">
+              <span class="grail-clock-digit" data-digit="0">4</span>
+              <span class="grail-clock-digit" data-digit="1">7</span>
             </div>
-          </div>
-
-          <div class="timer-dial-col">
-            <div class="timer-dial-card">
-              <div class="dial-svg-wrap">
-                <svg class="dial-svg" viewBox="0 0 300 300">
-                  <circle cx="150" cy="150" r="130" class="dial-track"/>
-                  <circle cx="150" cy="150" r="130" class="dial-progress" id="timer-progress-ring"/>
-                  <g class="dial-ticks">
-                    ${Array.from({ length: 48 }, (_, i) => {
-                      const angle = (i * 360) / 48;
-                      return `<line x1="150" y1="26" x2="150" y2="34" transform="rotate(${angle} 150 150)" class="dial-tick-mark"/>`;
-                    }).join('')}
-                  </g>
-                </svg>
-
-                <div class="dial-center">
-                  <span class="dial-quest-tag">ACTIVE TRIAL #104</span>
-                  <div class="dial-time" id="timer-display">47:59:58</div>
-                  <div class="dial-millis" id="timer-millis">.482</div>
-                  <span class="dial-status">HOURS : MINUTES : SECONDS</span>
-                </div>
-              </div>
-
-              <div class="dial-footer-strip">
-                <div class="strip-item">
-                  <span class="strip-label">STAKES</span>
-                  <span class="strip-val text-gold">+450 XP / -100 HP</span>
-                </div>
-                <div class="strip-item">
-                  <span class="strip-label">PATRON</span>
-                  <span class="strip-val">KEEPERS OF TIME</span>
-                </div>
-              </div>
+            <span class="grail-clock-colon">:</span>
+            <div class="grail-clock-group">
+              <span class="grail-clock-digit" data-digit="2">5</span>
+              <span class="grail-clock-digit" data-digit="3">9</span>
+            </div>
+            <span class="grail-clock-colon">:</span>
+            <div class="grail-clock-group">
+              <span class="grail-clock-digit" data-digit="4">5</span>
+              <span class="grail-clock-digit" data-digit="5">8</span>
             </div>
           </div>
         </div>
-      </div>
+
+        <!-- 3. 3D Floating Perspective Phone with Live Accepted Quest Card -->
+        <div class="grail-phone-stage" id="grail-phone-stage" aria-hidden="true">
+          <div class="phone-card-wrap">
+            <img 
+              class="phone-frame-img" 
+              src="/accept-phone.webp" 
+              alt="Grail Accepted Quest Phone Mockup" 
+              width="643" 
+              height="1306" 
+              loading="lazy" 
+              decoding="async" 
+            />
+            <div class="phone-screen-card" id="phone-screen-card">
+              <div class="phone-card-crest">
+                <img src="/patterns/seeker-of-forsaken-160.webp" alt="Seekers of Forsaken Crest" width="160" height="158" loading="lazy" decoding="async" />
+              </div>
+              <div class="phone-card-guild">The Seekers of Forsaken</div>
+              <h3 class="phone-card-quest">Ask a stranger for a recommendation today. A place, a book, anything.</h3>
+              <p class="phone-card-desc">People like being asked. Open your mouth to the barista, the neighbor, the person in line.</p>
+            </div>
+            <div class="phone-live-pill" id="phone-timer-pill">47:59:58</div>
+          </div>
+        </div>
+
+        <!-- 4. Pinned Editorial Accept Overlay -->
+        <div class="grail-accept-overlay" id="grail-accept-overlay" aria-hidden="true">
+          <!-- Fixed Colontitle Bar -->
+          <div class="grail-s4-colontitle">
+            <div class="colontitle-tag">
+              <span class="colon-dot"></span>
+              <span>ABOUT TIMER</span>
+            </div>
+            <span class="colon-num">CHAPTER 02</span>
+          </div>
+
+          <!-- Staggered Rising Words Headline -->
+          <h2 class="grail-s4-head">
+            <span class="grail-s4-line">
+              <span class="grail-s4-word" style="--i: 0">QUEST</span>
+              <span class="grail-s4-word" style="--i: 1">ACCEPTED.</span>
+            </span>
+            <span class="grail-s4-line">
+              <span class="grail-s4-word" style="--i: 2">CLOCK’S</span>
+              <span class="grail-s4-word" style="--i: 3">RUNNING.</span>
+            </span>
+          </h2>
+
+          <!-- Expanding Hairline Divider Line -->
+          <div class="grail-s4-divider"></div>
+
+          <!-- Two-Column Editorial Copy with Radial Ink Reveal -->
+          <div class="grail-ink-reveal">
+            <div class="grail-s4-body">
+              <p class="grail-s4-lead">
+                Now there’s a clock on it. Forty-eight hours to go do the thing, because “later” is how every one of these dies.
+              </p>
+              <p class="grail-s4-para">
+                Not 24, since a day is too easy to lose to work or weather or a bad mood. Two days gives you room to fit it into a real life, and keeps it tight enough that you can’t quietly let it slide. The clock is there to turn someday into this week.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Interactive Fallback Button for Quest Accept Trigger -->
+        <button id="t-accept-btn" style="position:absolute; opacity:0; pointer-events:none;" aria-label="Accept Quest"></button>
+      </section>
     `;
 
+    // Cache digit elements for atomic 60 FPS updates
+    this.digitElements = Array.from(this.el.querySelectorAll('.grail-clock-digit'));
+    this.phoneTimerPill = this.el.querySelector('#phone-timer-pill');
+    this.phoneStage = this.el.querySelector('#grail-phone-stage');
+    this.acceptBg = this.el.querySelector('#grail-accept-bg');
+    this.clockStage = this.el.querySelector('#grail-clock-stage');
+    this.acceptOverlay = this.el.querySelector('#grail-accept-overlay');
+
     this.startCountdown();
-    this.setupAcceptButton();
-    this.setupInkWaveCanvas();
+    this.setupInteractions();
+    this.setupScrollListener();
   }
 
+  /**
+   * Continuous live countdown ticker matching grail-app.com
+   */
   startCountdown() {
-    const display = this.el.querySelector('#timer-display');
-    const millisEl = this.el.querySelector('#timer-millis');
-    const ring = this.el.querySelector('#timer-progress-ring');
-    const circumference = 2 * Math.PI * 130;
-    ring.style.strokeDasharray = `${circumference} ${circumference}`;
+    const pad2 = (n) => String(n).padStart(2, '0');
 
-    let lastTick = performance.now();
-    let currentMs = 48 * 3600 * 1000 - 1500;
+    const updateDigits = () => {
+      const h = Math.floor(this.totalSeconds / 3600);
+      const m = Math.floor((this.totalSeconds % 3600) / 60);
+      const s = this.totalSeconds % 60;
+      const str = `${pad2(h)}${pad2(m)}${pad2(s)}`;
 
-    const tick = (now) => {
-      const delta = now - lastTick;
-      lastTick = now;
-
-      if (this.isRunning) {
-        currentMs -= delta;
-        if (currentMs <= 0) currentMs = 48 * 3600 * 1000;
-
-        const totalSecs = Math.floor(currentMs / 1000);
-        const hours = Math.floor(totalSecs / 3600);
-        const mins = Math.floor((totalSecs % 3600) / 60);
-        const secs = totalSecs % 60;
-        const millis = Math.floor((currentMs % 1000) / 10);
-
-        display.textContent = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        millisEl.textContent = `.${millis.toString().padStart(2, '0')}`;
-
-        const fraction = currentMs / (48 * 3600 * 1000);
-        ring.style.strokeDashoffset = `${circumference * (1 - fraction)}`;
-      }
-
-      requestAnimationFrame(tick);
-    };
-
-    requestAnimationFrame(tick);
-  }
-
-  setupAcceptButton() {
-    const btn = this.el.querySelector('#t-accept-btn');
-    btn.addEventListener('click', () => {
-      sound.playWarp();
-      this.triggerInkWave();
-
-      btn.classList.add('accepted');
-      btn.querySelector('span:last-of-type').textContent = 'QUEST INITIALIZED // 48:00:00';
-      setTimeout(() => {
-        btn.classList.remove('accepted');
-        btn.querySelector('span:last-of-type').textContent = 'ACCEPT NEW 48H QUEST';
-      }, 3500);
-    });
-  }
-
-  setupInkWaveCanvas() {
-    const container = this.el.querySelector('#timer-ink-canvas');
-    this.inkCanvas = document.createElement('canvas');
-    this.inkCanvas.className = 'ink-canvas';
-    container.appendChild(this.inkCanvas);
-    this.inkCtx = this.inkCanvas.getContext('2d');
-
-    const resize = () => {
-      this.inkCanvas.width = this.el.clientWidth;
-      this.inkCanvas.height = this.el.clientHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-  }
-
-  startInkLoop() {
-    if (this.inkRafId) return;
-
-    const loop = () => {
-      if (this.ripples.length === 0) {
-        this.inkCtx.clearRect(0, 0, this.inkCanvas.width, this.inkCanvas.height);
-        this.inkRafId = null;
-        return;
-      }
-
-      this.inkCtx.clearRect(0, 0, this.inkCanvas.width, this.inkCanvas.height);
-      for (let i = this.ripples.length - 1; i >= 0; i--) {
-        const r = this.ripples[i];
-        r.radius += r.speed;
-        r.alpha *= 0.96;
-
-        this.inkCtx.beginPath();
-        this.inkCtx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-        this.inkCtx.strokeStyle = `rgba(202, 168, 110, ${r.alpha})`;
-        this.inkCtx.lineWidth = r.width;
-        this.inkCtx.stroke();
-
-        if (r.alpha < 0.01) {
-          this.ripples.splice(i, 1);
+      for (let i = 0; i < 6; i++) {
+        const el = this.digitElements[i];
+        if (el && el.textContent !== str[i]) {
+          el.textContent = str[i];
         }
       }
-      this.inkRafId = requestAnimationFrame(loop);
+
+      if (this.phoneTimerPill) {
+        this.phoneTimerPill.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+      }
+
+      this.totalSeconds = Math.max(0, this.totalSeconds - 1);
     };
-    this.inkRafId = requestAnimationFrame(loop);
+
+    updateDigits();
+    this.timerInterval = setInterval(updateDigits, 1000);
   }
 
-  triggerInkWave() {
-    const btn = this.el.querySelector('#t-accept-btn');
-    const rect = btn.getBoundingClientRect();
-    const sectionRect = this.el.getBoundingClientRect();
-    const x = rect.left + rect.width / 2 - sectionRect.left;
-    const y = rect.top + rect.height / 2 - sectionRect.top;
+  setupInteractions() {
+    const phoneCard = this.el.querySelector('#phone-screen-card');
+    if (phoneCard) {
+      phoneCard.addEventListener('click', () => {
+        sound.playWarp();
+        phoneCard.classList.add('pulse-glow');
+        setTimeout(() => phoneCard.classList.remove('pulse-glow'), 1200);
+      });
+    }
 
-    for (let i = 0; i < 4; i++) {
-      setTimeout(() => {
-        this.ripples.push({
-          x: x,
-          y: y,
-          radius: 10 + i * 15,
-          speed: 6 + i * 2,
-          alpha: 0.65 - i * 0.1,
-          width: 3 - i * 0.5
-        });
-        this.startInkLoop();
-      }, i * 100);
+    const acceptBtn = this.el.querySelector('#t-accept-btn');
+    if (acceptBtn) {
+      acceptBtn.addEventListener('click', () => {
+        sound.playWarp();
+        this.totalSeconds = 48 * 3600;
+      });
+    }
+  }
+
+  setupScrollListener() {
+    this.boundScroll = () => {
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight || 1;
+      const progress = scrollY / vh;
+      this.onScroll(progress, scrollY, vh);
+    };
+    window.addEventListener('scroll', this.boundScroll, { passive: true });
+    // Run once on mount
+    this.boundScroll();
+  }
+
+  /**
+   * Cubic Hermite Smoothstep matching grail-app.com $ function
+   */
+  smoothstep(min, max, val) {
+    const r = Math.min(1, Math.max(0, (val - min) / (max - min)));
+    return r * r * (3 - 2 * r);
+  }
+
+  /**
+   * Frame-by-frame exact scroll calculation
+   * Drives CSS variables on documentElement & toggles visibility
+   */
+  onScroll(progress, scrollY, vh) {
+    const root = document.documentElement;
+
+    // Range: Chapter 01 (p ~1.0) -> Section 3 (p ~2.0) -> Chapter 02 (p 2.0 to 3.2) -> Chapter 03 (p >3.2)
+    const ink = this.smoothstep(1.9, 2.65, progress);
+    const inkFill = this.smoothstep(1.9, 2.65, progress);
+    const dGrow = this.smoothstep(2.1, 2.5, progress);
+    const phone = this.smoothstep(2.15, 2.65, progress);
+    const hl = this.smoothstep(2.25, 2.75, progress);
+    const vCard = this.smoothstep(1.85, 2.35, progress);
+    const deckOut = this.smoothstep(1.95, 2.2, progress);
+
+    // Fade out as user reaches Chapter 03
+    let aFade = 1.0;
+    if (progress > 3.2) {
+      aFade = Math.max(0, 1 - this.smoothstep(3.2, 3.8, progress));
+    }
+
+    root.style.setProperty('--ink', ink.toFixed(4));
+    root.style.setProperty('--inkfill', inkFill.toFixed(4));
+    root.style.setProperty('--dgrow', dGrow.toFixed(4));
+    root.style.setProperty('--phone', phone.toFixed(4));
+    root.style.setProperty('--hl', hl.toFixed(4));
+    root.style.setProperty('--vcard', vCard.toFixed(4));
+    root.style.setProperty('--deckout', deckOut.toFixed(4));
+    root.style.setProperty('--afade', aFade.toFixed(4));
+
+    // Visibility toggle to avoid wasting GPU compositing outside Chapter 02 range
+    const isVisible = progress >= 1.6 && progress <= 4.2 && aFade > 0.001;
+    const visStr = isVisible ? 'visible' : 'hidden';
+
+    if (this.acceptBg) this.acceptBg.style.visibility = visStr;
+    if (this.clockStage) this.clockStage.style.visibility = visStr;
+    if (this.phoneStage) this.phoneStage.style.visibility = visStr;
+    if (this.acceptOverlay) this.acceptOverlay.style.visibility = visStr;
+  }
+
+  destroy() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+    if (this.boundScroll) {
+      window.removeEventListener('scroll', this.boundScroll);
+      this.boundScroll = null;
     }
   }
 }

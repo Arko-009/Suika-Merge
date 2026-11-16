@@ -256,7 +256,10 @@ button, a, .problem-card, .milestone-node, .totem-pill-btn, .voice-track-tab, .s
   pointer-events: auto;
   overflow: hidden;
   transition: opacity 0.4s ease;
-  will-change: opacity;
+  will-change: opacity, transform;
+  transform: translateZ(0) scale(calc(1 - var(--vcard, 0)));
+  transform-origin: 50% 42%;
+  opacity: calc((1 - var(--vcard, 0)) * (1 - var(--deckout, 0)));
 }
 
 .spiral-deck-fixed-layer .spiral-webgl-canvas {
@@ -1208,205 +1211,336 @@ input:checked + .valk-slider-round:before {
 }
 
 /* =========================================
-   CHAPTER 02: ABOUT TIMER
+   GRAIL // CHAPTER 02: ABOUT TIMER (1:1 Exact Match)
    ========================================= */
-.ch-timer {
-  background: transparent !important;
+.grail-timer-wrapper {
   position: relative;
-  z-index: 2;
-  overflow: hidden;
+  width: 100%;
+}
+
+.grail-section3 {
+  z-index: 3;
+  pointer-events: none;
+  min-height: 100vh;
+  position: relative;
+}
+
+.grail-section4 {
+  z-index: 3;
   pointer-events: none;
   min-height: 120vh;
+  position: relative;
 }
 
-.ch-timer > * {
-  pointer-events: auto;
-}
-
-.timer-canvas-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+/* 1. Fullscreen Atmospheric Ink Background */
+.grail-accept-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  z-index: 2;
   pointer-events: none;
+  opacity: var(--afade, 1);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--inkfill, 0) * 100vmax - 9vmax), transparent calc(var(--inkfill, 0) * 100vmax));
+  mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--inkfill, 0) * 100vmax - 9vmax), transparent calc(var(--inkfill, 0) * 100vmax));
+  background: radial-gradient(circle at 50% 50%, rgba(55, 25, 62, 0.95) 0%, rgba(26, 12, 30, 0.98) 45%, #050608 100%);
+  will-change: mask-image, -webkit-mask-image, opacity;
 }
 
-.ink-canvas {
-  width: 100%;
-  height: 100%;
-}
-
-.timer-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: center;
-}
-
-.timer-kicker {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  color: var(--gold-primary);
-  display: block;
-  margin-bottom: 12px;
-}
-
-.timer-heading {
-  font-size: clamp(36px, 4.5vw, 56px);
-  line-height: 1.1;
-  color: #ffffff;
-  margin-bottom: 24px;
-}
-
-.timer-heading em {
-  color: var(--gold-primary);
-  font-style: italic;
-}
-
-.timer-desc {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
-}
-
-.timer-sub-desc {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-muted);
-  margin-bottom: 36px;
-}
-
-.timer-accept-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 32px;
-  background: var(--gold-primary);
-  color: #07090b;
-  border-radius: 28px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.timer-accept-btn:hover {
-  background: var(--gold-light);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--gold-glow);
-}
-
-.timer-dial-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-gold);
-  border-radius: 28px;
-  padding: 40px;
+/* 2. Giant Atmospheric Countdown Clock */
+.grail-clock-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  height: 100vh;
+  height: 100lvh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 20px 48px rgba(0,0,0,0.5);
-}
-
-.dial-svg-wrap {
-  position: relative;
-  width: 280px;
-  height: 280px;
-  margin-bottom: 28px;
-}
-
-.dial-svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.dial-track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.06);
-  stroke-width: 6;
-}
-
-.dial-progress {
-  fill: none;
-  stroke: var(--gold-primary);
-  stroke-width: 6;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.1s linear;
-}
-
-.dial-tick-mark {
-  stroke: rgba(202, 168, 110, 0.4);
-  stroke-width: 1.5;
-}
-
-.dial-center {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: var(--afade, 1);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--ink, 0) * 100vmax - 9vmax), transparent calc(var(--ink, 0) * 100vmax));
+  mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--ink, 0) * 100vmax - 9vmax), transparent calc(var(--ink, 0) * 100vmax));
+  will-change: mask-image, -webkit-mask-image, opacity;
+}
+
+.grail-clock-num {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: #e7afe7;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  padding: 0 2.5vw;
+  font-size: 24vw;
+  font-weight: 300;
+  line-height: 1;
+  display: flex;
+  text-shadow: 0 0 80px rgba(231, 175, 231, 0.25);
+}
+
+.grail-clock-group {
+  display: flex;
+}
+
+.grail-clock-digit {
   text-align: center;
+  width: 0.56em;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
 }
 
-.dial-quest-tag {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: var(--gold-primary);
-  margin-bottom: 6px;
+.grail-clock-colon {
+  text-align: center;
+  width: 0.2em;
+  display: inline-block;
+  opacity: 0.85;
 }
 
-.dial-time {
-  font-family: var(--font-mono);
-  font-size: 38px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #ffffff;
+/* 3. 3D Floating Perspective Phone with Live Quest Card */
+.grail-phone-stage {
+  position: fixed;
+  top: 22vh;
+  left: 50%;
+  z-index: 4;
+  pointer-events: none;
+  width: auto;
+  height: 54vh;
+  transform: translateX(-50%) perspective(1400px) rotateY(calc((1 - var(--phone, 0)) * -22deg)) rotateX(calc((1 - var(--phone, 0)) * 10deg)) translateY(calc((1 - var(--phone, 0)) * 7vh)) scale(calc(0.84 + 0.16 * var(--phone, 0)));
+  opacity: var(--phone, 0);
+  filter: blur(calc((1 - var(--phone, 0)) * 14px));
+  will-change: transform, opacity, filter;
 }
 
-.dial-millis {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  color: var(--gold-primary);
+.phone-card-wrap {
+  position: relative;
+  height: 100%;
+  display: inline-block;
+}
+
+.phone-frame-img {
+  height: 100%;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.8));
+}
+
+.phone-screen-card {
+  position: absolute;
+  top: 15.5%;
+  left: 9%;
+  right: 9%;
+  background: #f3f3f3;
+  color: #111111;
+  border-radius: 18px;
+  padding: 16px 14px;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.phone-screen-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px rgba(231, 175, 231, 0.4);
+}
+
+.phone-card-crest {
+  width: 44px;
+  height: 44px;
   margin-bottom: 8px;
 }
 
-.dial-status {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
+.phone-card-crest img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.dial-footer-strip {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding-top: 18px;
-  border-top: 1px solid var(--border-subtle);
+.phone-card-guild {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #666666;
+  margin-bottom: 6px;
+}
+
+.phone-card-quest {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.phone-card-desc {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.35;
+  color: #555555;
+  margin: 0;
+}
+
+.phone-live-pill {
+  position: absolute;
+  bottom: 14.8%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(235, 235, 235, 0.94);
+  color: #111111;
   font-family: var(--font-mono);
   font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 12px;
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.strip-item {
+/* 4. Pinned Accept Overlay & Staggered Typography */
+.grail-accept-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--afade, 1);
+  z-index: 5;
+  color: #e7afe7;
+}
+
+.grail-s4-colontitle {
+  position: fixed;
+  top: 32px;
+  left: 40px;
+  right: 40px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 6;
+  opacity: calc(var(--ink, 0) * var(--afade, 1));
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: #e7afe7;
 }
 
-.strip-label {
-  color: var(--text-muted);
-  font-size: 9px;
+.grail-s4-head {
+  text-align: center;
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 0;
+  font-size: min(6.4vw, 9vh);
+  font-weight: 300;
+  line-height: 0.88;
+  position: absolute;
+  top: 4vh;
+  left: 0;
+  right: 0;
+  color: #ffffff;
+}
+
+.grail-s4-line {
+  display: block;
+}
+
+.grail-s4-word {
+  --w: clamp(0, calc((var(--hl, 0) - var(--i, 0) * 0.09) / 0.4), 1);
+  opacity: var(--w);
+  transform: translateY(calc((1 - var(--w)) * 0.5em));
+  will-change: opacity, transform;
+  display: inline-block;
+  margin: 0 0.15em;
+}
+
+.grail-s4-divider {
+  height: 1px;
+  transform: scaleX(var(--dgrow, 0));
+  transform-origin: 0;
+  background: rgba(231, 175, 231, 0.32);
+  position: absolute;
+  top: 79vh;
+  left: 40px;
+  right: 40px;
+}
+
+.grail-ink-reveal {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--ink, 0) * 100vmax - 9vmax), transparent calc(var(--ink, 0) * 100vmax));
+  mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--ink, 0) * 100vmax - 9vmax), transparent calc(var(--ink, 0) * 100vmax));
+}
+
+.grail-s4-body {
+  color: #e7afe7;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: min(8vw, 120px);
+  font-size: 16px;
+  line-height: 1.24;
+  display: flex;
+  position: absolute;
+  top: 82vh;
+  left: 40px;
+  right: 40px;
+}
+
+.grail-s4-lead {
+  flex: 0 min(430px, 40%);
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.grail-s4-para {
+  flex: 0 min(520px, 46%);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .grail-phone-stage {
+    height: 44vh;
+    top: 20vh;
+  }
+  .grail-clock-num {
+    font-size: 20vw;
+    padding: 0 1.5vw;
+  }
+  .grail-s4-head {
+    font-size: clamp(28px, 8.5vw, 42px);
+    top: 5vh;
+  }
+  .grail-s4-divider {
+    top: 68vh;
+    left: 20px;
+    right: 20px;
+  }
+  .grail-s4-body {
+    flex-direction: column;
+    gap: 16px;
+    top: 71vh;
+    left: 20px;
+    right: 20px;
+  }
+  .grail-s4-lead,
+  .grail-s4-para {
+    flex: none;
+  }
+  .grail-s4-colontitle {
+    top: 20px;
+    left: 20px;
+    right: 20px;
+  }
 }
 
 /* =========================================

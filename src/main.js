@@ -139,6 +139,10 @@ class App {
         this.spiralDeck.onPageScroll(progress);
       }
 
+      if (this.ch02 && typeof this.ch02.onScroll === 'function') {
+        this.ch02.onScroll(progress, scrollY, vh);
+      }
+
       const prompt = document.querySelector('.hero-scroll-prompt');
       if (prompt) {
         const offset = Math.max(0, scrollY - vh * 0.2);
