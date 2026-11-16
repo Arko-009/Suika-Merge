@@ -36,20 +36,29 @@ export class Chapter02Timer {
 
         <!-- 2. Giant Atmospheric Countdown Clock Stage -->
         <div class="grail-clock-stage" id="grail-clock-stage" aria-hidden="true">
-          <div class="grail-clock-num">
-            <div class="grail-clock-group">
-              <span class="grail-clock-digit" data-digit="0">4</span>
-              <span class="grail-clock-digit" data-digit="1">7</span>
-            </div>
-            <span class="grail-clock-colon">:</span>
-            <div class="grail-clock-group">
-              <span class="grail-clock-digit" data-digit="2">5</span>
-              <span class="grail-clock-digit" data-digit="3">9</span>
-            </div>
-            <span class="grail-clock-colon">:</span>
-            <div class="grail-clock-group">
-              <span class="grail-clock-digit" data-digit="4">5</span>
-              <span class="grail-clock-digit" data-digit="5">8</span>
+          <!-- Initial Transformation Stage: Centered "48" with Soft Radial Aura (Grail Image 2 Match) -->
+          <div class="grail-clock-initial-stage" id="grail-clock-initial-stage" aria-hidden="true">
+            <div class="grail-clock-aura"></div>
+            <div class="grail-clock-48">48</div>
+          </div>
+
+          <!-- Full Width Countdown Clock Stage (Active 47:59:58 Ticker) -->
+          <div class="grail-clock-full-stage" id="grail-clock-full-stage" aria-hidden="true">
+            <div class="grail-clock-num">
+              <div class="grail-clock-group">
+                <span class="grail-clock-digit" data-digit="0">4</span>
+                <span class="grail-clock-digit" data-digit="1">7</span>
+              </div>
+              <span class="grail-clock-colon">:</span>
+              <div class="grail-clock-group">
+                <span class="grail-clock-digit" data-digit="2">5</span>
+                <span class="grail-clock-digit" data-digit="3">9</span>
+              </div>
+              <span class="grail-clock-colon">:</span>
+              <div class="grail-clock-group">
+                <span class="grail-clock-digit" data-digit="4">5</span>
+                <span class="grail-clock-digit" data-digit="5">8</span>
+              </div>
             </div>
           </div>
         </div>
@@ -212,13 +221,19 @@ export class Chapter02Timer {
     const root = document.documentElement;
 
     // Range: Chapter 01 (p ~1.0) -> Section 3 (p ~2.0) -> Chapter 02 (p 2.0 to 3.2) -> Chapter 03 (p >3.2)
-    const ink = this.smoothstep(1.9, 2.65, progress);
-    const inkFill = this.smoothstep(1.9, 2.65, progress);
-    const dGrow = this.smoothstep(2.1, 2.5, progress);
-    const phone = this.smoothstep(2.15, 2.65, progress);
-    const hl = this.smoothstep(2.25, 2.75, progress);
-    const vCard = this.smoothstep(1.85, 2.35, progress);
-    const deckOut = this.smoothstep(1.95, 2.2, progress);
+    // 1. Initial Transformation Stage (Grail Image 2: Centered "48" + Soft Aura)
+    const aura = this.smoothstep(1.92, 2.12, progress) * (1 - this.smoothstep(2.35, 2.60, progress));
+    const p48 = this.smoothstep(1.92, 2.12, progress) * (1 - this.smoothstep(2.22, 2.40, progress));
+    const clockFull = this.smoothstep(2.22, 2.45, progress);
+
+    // 2. Active Expansion Stage (Full Clock, Radial Mask, 3D Phone, Rising Words)
+    const ink = this.smoothstep(1.95, 2.65, progress);
+    const inkFill = this.smoothstep(1.95, 2.65, progress);
+    const dGrow = this.smoothstep(2.15, 2.50, progress);
+    const phone = this.smoothstep(2.20, 2.65, progress);
+    const hl = this.smoothstep(2.30, 2.75, progress);
+    const vCard = this.smoothstep(1.92, 2.40, progress);
+    const deckOut = this.smoothstep(2.00, 2.25, progress);
 
     // Fade out as user reaches Chapter 03
     let aFade = 1.0;
@@ -226,6 +241,9 @@ export class Chapter02Timer {
       aFade = Math.max(0, 1 - this.smoothstep(3.2, 3.8, progress));
     }
 
+    root.style.setProperty('--aura', aura.toFixed(4));
+    root.style.setProperty('--p48', p48.toFixed(4));
+    root.style.setProperty('--clockfull', clockFull.toFixed(4));
     root.style.setProperty('--ink', ink.toFixed(4));
     root.style.setProperty('--inkfill', inkFill.toFixed(4));
     root.style.setProperty('--dgrow', dGrow.toFixed(4));

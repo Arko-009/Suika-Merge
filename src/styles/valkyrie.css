@@ -1,5 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
+@font-face {
+  font-family: 'PP Pangaia';
+  src: url('/fonts/PPPangaia-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Switzer';
+  src: url('/fonts/Switzer-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-deep: #090c0e;
   --bg-slate: #101518;
@@ -24,8 +40,8 @@
   --border-gold: rgba(202, 168, 110, 0.28);
   --border-gold-strong: rgba(202, 168, 110, 0.65);
 
-  --font-serif: "Cinzel", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: "PP Pangaia", "Cinzel", Georgia, serif;
+  --font-sans: "Switzer", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
@@ -1152,7 +1168,7 @@ input:checked + .valk-slider-round:before {
   opacity: var(--afade, 1);
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--inkfill, 0) * 100vmax - 9vmax), transparent calc(var(--inkfill, 0) * 100vmax));
   mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--inkfill, 0) * 100vmax - 9vmax), transparent calc(var(--inkfill, 0) * 100vmax));
-  background: radial-gradient(circle at 50% 50%, rgba(55, 25, 62, 0.95) 0%, rgba(26, 12, 30, 0.98) 45%, #050608 100%);
+  background: radial-gradient(circle at 50% 50%, #fbcffa 0%, #f7c6f7 30vmax, #d29ce2 60vmax);
   will-change: mask-image, -webkit-mask-image, opacity;
 }
 
@@ -1172,6 +1188,65 @@ input:checked + .valk-slider-round:before {
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--ink, 0) * 100vmax - 9vmax), transparent calc(var(--ink, 0) * 100vmax));
   mask-image: radial-gradient(circle at 50% 50%, #000 calc(var(--ink, 0) * 100vmax - 9vmax), transparent calc(var(--ink, 0) * 100vmax));
   will-change: mask-image, -webkit-mask-image, opacity;
+}
+
+/* Initial Transformation Stage ("48" & Soft Radial Aura - Grail Image 2) */
+.grail-clock-initial-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: var(--p48, 0);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+
+.grail-clock-aura {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 85vw);
+  height: min(520px, 85vw);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 225, 255, 0.52) 0%, rgba(247, 198, 247, 0.40) 28%, rgba(154, 94, 194, 0.22) 54%, rgba(0, 0, 0, 0) 72%);
+  filter: blur(32px);
+  opacity: var(--aura, 0);
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+
+.grail-clock-48 {
+  font-family: var(--font-serif);
+  font-size: clamp(140px, 24vw, 320px);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: #e7afe7;
+  text-shadow: 0 0 60px rgba(231, 175, 231, 0.4), 0 0 140px rgba(154, 94, 194, 0.25);
+  user-select: none;
+  white-space: nowrap;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  will-change: opacity, transform;
+}
+
+/* Full Width Countdown Clock (Active Ticker 47:59:58) */
+.grail-clock-full-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: var(--clockfull, 0);
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
 }
 
 .grail-clock-num {
