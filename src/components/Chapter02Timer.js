@@ -1,24 +1,27 @@
+import { WarpFill } from './WarpFill.js';
 import { sound } from '../sound/SoundEngine.js';
 
 /**
  * GRAIL // CHAPTER 02: ABOUT TIMER
  * 1:1 Frame-by-frame exact match of grail-app.com motion design:
- * - Fullscreen dynamic ink-reveal radial mask (--ink, --inkfill)
- * - Giant 24vw typography atmospheric ticking clock (47:59:58)
- * - 3D perspective floating phone swoop with blur, tilt, and de-blur (--phone)
- * - Staggered rising words headline (--hl, --i)
- * - Left-to-right expanding hairline divider (--dgrow)
- * - Two-column editorial copy with radial ink reveal
- * - Smoothstep transition from Chapter 01 through Section 3 runway into Chapter 02 and Chapter 03
+ * - Pure WebGL organic ink blot (WarpFill) with domain-warped FBM reaching fingers
+ * - Giant 24vw typography countdown clock (47 : MM : SS) in PP Pangaia
+ * - Radial gradient ink mask revealing the center minutes directly behind the 3D card
+ * - 3D perspective floating phone mockup swooping in with depth blur (blur(14px) -> blur(0px))
+ * - Staggered rising words headline: QUEST ACCEPTED. CLOCK'S RUNNING. in deep plum (#2c1538)
+ * - Expanding hairline divider (#62356247) and two-column editorial copy in deep plum (#623562)
  */
 export class Chapter02Timer {
   constructor() {
     this.el = null;
-    this.totalSeconds = 47 * 3600 + 59 * 60 + 58;
+    this.warpFill = null;
+    this.canvas = null;
+    // Authentic countdown matching Grail's screenshot
+    this.totalSeconds = 47 * 3600 + 44 * 60 + 15;
     this.digitElements = [];
-    this.phoneTimerPill = null;
     this.timerInterval = null;
     this.boundScroll = null;
+    this.boundResize = null;
     this.init();
   }
 
@@ -31,71 +34,48 @@ export class Chapter02Timer {
 
       <!-- Section 4 Anchor for Chapter 02 (Spy & Scroll Target) -->
       <section id="ch-timer" class="grail-section4" aria-label="Chapter 02: About Timer">
-        <!-- 1. Fullscreen Atmospheric Ink Background -->
-        <div class="grail-accept-bg" id="grail-accept-bg" aria-hidden="true"></div>
+        <!-- 1. Fullscreen WebGL Organic Ink Blot Background Canvas -->
+        <canvas class="grail-accept-bg" id="grail-accept-canvas" aria-hidden="true"></canvas>
 
         <!-- 2. Giant Atmospheric Countdown Clock Stage -->
         <div class="grail-clock-stage" id="grail-clock-stage" aria-hidden="true">
-          <!-- Initial Transformation Stage: Centered "48" with Soft Radial Aura (Grail Image 2 Match) -->
-          <div class="grail-clock-initial-stage" id="grail-clock-initial-stage" aria-hidden="true">
-            <div class="grail-clock-aura"></div>
-            <div class="grail-clock-48">48</div>
-          </div>
-
-          <!-- Full Width Countdown Clock Stage (Active 47:59:58 Ticker) -->
-          <div class="grail-clock-full-stage" id="grail-clock-full-stage" aria-hidden="true">
-            <div class="grail-clock-num">
-              <div class="grail-clock-group">
-                <span class="grail-clock-digit" data-digit="0">4</span>
-                <span class="grail-clock-digit" data-digit="1">7</span>
-              </div>
-              <span class="grail-clock-colon">:</span>
-              <div class="grail-clock-group">
-                <span class="grail-clock-digit" data-digit="2">5</span>
-                <span class="grail-clock-digit" data-digit="3">9</span>
-              </div>
-              <span class="grail-clock-colon">:</span>
-              <div class="grail-clock-group">
-                <span class="grail-clock-digit" data-digit="4">5</span>
-                <span class="grail-clock-digit" data-digit="5">8</span>
-              </div>
+          <div class="grail-clock-num">
+            <div class="grail-clock-group">
+              <span class="grail-clock-digit" data-digit="0">4</span>
+              <span class="grail-clock-digit" data-digit="1">7</span>
+            </div>
+            <span class="grail-clock-colon">:</span>
+            <div class="grail-clock-group">
+              <span class="grail-clock-digit" data-digit="2">4</span>
+              <span class="grail-clock-digit" data-digit="3">4</span>
+            </div>
+            <span class="grail-clock-colon">:</span>
+            <div class="grail-clock-group">
+              <span class="grail-clock-digit" data-digit="4">1</span>
+              <span class="grail-clock-digit" data-digit="5">5</span>
             </div>
           </div>
         </div>
 
-        <!-- 3. 3D Floating Perspective Phone with Live Accepted Quest Card -->
-        <div class="grail-phone-stage" id="grail-phone-stage" aria-hidden="true">
-          <div class="phone-card-wrap">
-            <img 
-              class="phone-frame-img" 
-              src="/accept-phone.webp" 
-              alt="Grail Accepted Quest Phone Mockup" 
-              width="643" 
-              height="1306" 
-              loading="lazy" 
-              decoding="async" 
-            />
-            <div class="phone-screen-card" id="phone-screen-card">
-              <div class="phone-card-crest">
-                <img src="/patterns/seeker-of-forsaken-160.webp" alt="Seekers of Forsaken Crest" width="160" height="158" loading="lazy" decoding="async" />
-              </div>
-              <div class="phone-card-guild">The Seekers of Forsaken</div>
-              <h3 class="phone-card-quest">Ask a stranger for a recommendation today. A place, a book, anything.</h3>
-              <p class="phone-card-desc">People like being asked. Open your mouth to the barista, the neighbor, the person in line.</p>
-            </div>
-            <div class="phone-live-pill" id="phone-timer-pill">47:59:58</div>
-          </div>
-        </div>
+        <!-- 3. 3D Floating Perspective Phone Mockup (Exact Grail Asset) -->
+        <img 
+          class="grail-phone" 
+          id="grail-phone-img"
+          src="/accept-phone.webp" 
+          alt="" 
+          aria-hidden="true" 
+          width="643" 
+          height="1306" 
+          loading="lazy" 
+          decoding="async" 
+        />
 
-        <!-- 4. Pinned Editorial Accept Overlay -->
+        <!-- 4. Pinned Accept Overlay & Staggered Typography -->
         <div class="grail-accept-overlay" id="grail-accept-overlay" aria-hidden="true">
           <!-- Fixed Colontitle Bar -->
           <div class="grail-s4-colontitle">
-            <div class="colontitle-tag">
-              <span class="colon-dot"></span>
-              <span>ABOUT TIMER</span>
-            </div>
-            <span class="colon-num">CHAPTER 02</span>
+            <span class="colon-label">About Timer</span>
+            <span class="colon-right">Chapter 02</span>
           </div>
 
           <!-- Staggered Rising Words Headline -->
@@ -131,17 +111,23 @@ export class Chapter02Timer {
       </section>
     `;
 
-    // Cache digit elements for atomic 60 FPS updates
+    // Cache elements
+    this.canvas = this.el.querySelector('#grail-accept-canvas');
     this.digitElements = Array.from(this.el.querySelectorAll('.grail-clock-digit'));
-    this.phoneTimerPill = this.el.querySelector('#phone-timer-pill');
-    this.phoneStage = this.el.querySelector('#grail-phone-stage');
-    this.acceptBg = this.el.querySelector('#grail-accept-bg');
+    this.phoneStage = this.el.querySelector('#grail-phone-img');
+    this.acceptBg = this.canvas;
     this.clockStage = this.el.querySelector('#grail-clock-stage');
     this.acceptOverlay = this.el.querySelector('#grail-accept-overlay');
+
+    // Initialize WebGL WarpFill ink blot
+    if (this.canvas) {
+      this.warpFill = new WarpFill(this.canvas);
+    }
 
     this.startCountdown();
     this.setupInteractions();
     this.setupScrollListener();
+    this.setupResizeListener();
   }
 
   /**
@@ -163,10 +149,6 @@ export class Chapter02Timer {
         }
       }
 
-      if (this.phoneTimerPill) {
-        this.phoneTimerPill.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
-      }
-
       this.totalSeconds = Math.max(0, this.totalSeconds - 1);
     };
 
@@ -175,15 +157,6 @@ export class Chapter02Timer {
   }
 
   setupInteractions() {
-    const phoneCard = this.el.querySelector('#phone-screen-card');
-    if (phoneCard) {
-      phoneCard.addEventListener('click', () => {
-        sound.playWarp();
-        phoneCard.classList.add('pulse-glow');
-        setTimeout(() => phoneCard.classList.remove('pulse-glow'), 1200);
-      });
-    }
-
     const acceptBtn = this.el.querySelector('#t-accept-btn');
     if (acceptBtn) {
       acceptBtn.addEventListener('click', () => {
@@ -191,6 +164,15 @@ export class Chapter02Timer {
         this.totalSeconds = 48 * 3600;
       });
     }
+  }
+
+  setupResizeListener() {
+    this.boundResize = () => {
+      if (this.warpFill) {
+        this.warpFill.onResize();
+      }
+    };
+    window.addEventListener('resize', this.boundResize, { passive: true });
   }
 
   setupScrollListener() {
@@ -215,35 +197,46 @@ export class Chapter02Timer {
 
   /**
    * Frame-by-frame exact scroll calculation
-   * Drives CSS variables on documentElement & toggles visibility
+   * Drives WebGL WarpFill shader & CSS variables matching Grail
    */
   onScroll(progress, scrollY, vh) {
     const root = document.documentElement;
 
-    // Range: Chapter 01 (p ~1.0) -> Section 3 (p ~2.0) -> Chapter 02 (p 2.0 to 3.2) -> Chapter 03 (p >3.2)
-    // 1. Initial Transformation Stage (Grail Image 2: Centered "48" + Soft Aura)
-    const aura = this.smoothstep(1.92, 2.12, progress) * (1 - this.smoothstep(2.35, 2.60, progress));
-    const p48 = this.smoothstep(1.92, 2.12, progress) * (1 - this.smoothstep(2.22, 2.40, progress));
-    const clockFull = this.smoothstep(2.22, 2.45, progress);
+    // Timeline:
+    // 0.0 - 1.0: Hero
+    // 1.0 - 1.75: Chapter 01 Problem (Text overlays 3D card)
+    // 1.75 - 1.90: Section 3 runway (Only centered 3D card in pure black silence)
+    // 1.90 - 2.60: Transformation starts:
+    //              - WarpFill WebGL organic ink blot expands
+    //              - Radial mask reveals center minutes [44] behind card (Image 1)
+    //              - Liquid shores deform with reaching fingers (Image 2)
+    //              - Clock expands across screen (47 : 46 : 13)
+    //              - 3D card executes 360° wave flip (uFlip: 1.95 -> 2.55)
+    //              - Hairline divider draws left to right (dgrow: 2.10 -> 2.45)
+    //              - Editorial plum copy reveals via ink mask
+    // 2.20 - 2.65: Phone mockup swoops in with perspective & depth blur (Image 3)
+    // 2.30 - 2.72: Headline rising words in deep plum #2c1538 (Image 4)
 
-    // 2. Active Expansion Stage (Full Clock, Radial Mask, 3D Phone, Rising Words)
-    const ink = this.smoothstep(1.95, 2.65, progress);
-    const inkFill = this.smoothstep(1.95, 2.65, progress);
-    const dGrow = this.smoothstep(2.15, 2.50, progress);
+    const ink = this.smoothstep(1.90, 2.60, progress);
+    const inkFill = this.smoothstep(1.90, 2.60, progress);
+    const dGrow = this.smoothstep(2.10, 2.45, progress);
     const phone = this.smoothstep(2.20, 2.65, progress);
-    const hl = this.smoothstep(2.30, 2.75, progress);
+    const hl = this.smoothstep(2.30, 2.72, progress);
     const vCard = this.smoothstep(1.92, 2.40, progress);
-    const deckOut = this.smoothstep(2.00, 2.25, progress);
+    const deckOut = this.smoothstep(1.98, 2.15, progress);
 
-    // Fade out as user reaches Chapter 03
+    // Fade out smoothly as user scrolls into Chapter 03 (About Journey)
     let aFade = 1.0;
     if (progress > 3.2) {
       aFade = Math.max(0, 1 - this.smoothstep(3.2, 3.8, progress));
     }
 
-    root.style.setProperty('--aura', aura.toFixed(4));
-    root.style.setProperty('--p48', p48.toFixed(4));
-    root.style.setProperty('--clockfull', clockFull.toFixed(4));
+    // Drive WebGL organic ink blot
+    if (this.warpFill) {
+      this.warpFill.setProgress(ink);
+    }
+
+    // Set CSS variables on root documentElement
     root.style.setProperty('--ink', ink.toFixed(4));
     root.style.setProperty('--inkfill', inkFill.toFixed(4));
     root.style.setProperty('--dgrow', dGrow.toFixed(4));
@@ -253,7 +246,7 @@ export class Chapter02Timer {
     root.style.setProperty('--deckout', deckOut.toFixed(4));
     root.style.setProperty('--afade', aFade.toFixed(4));
 
-    // Visibility toggle to avoid wasting GPU compositing outside Chapter 02 range
+    // Visibility toggle to avoid wasting GPU compositing outside Chapter 02
     const isVisible = progress >= 1.6 && progress <= 4.2 && aFade > 0.001;
     const visStr = isVisible ? 'visible' : 'hidden';
 
@@ -271,6 +264,14 @@ export class Chapter02Timer {
     if (this.boundScroll) {
       window.removeEventListener('scroll', this.boundScroll);
       this.boundScroll = null;
+    }
+    if (this.boundResize) {
+      window.removeEventListener('resize', this.boundResize);
+      this.boundResize = null;
+    }
+    if (this.warpFill) {
+      this.warpFill.dispose();
+      this.warpFill = null;
     }
   }
 }
