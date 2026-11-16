@@ -325,15 +325,15 @@ export class SpiralDeck {
       magnet: 0.18 // Responsive tactile hover magnet
     };
 
-    // Transition Thresholds for extended hero runway
-    this.Pe = 0.45; // Hero -> Chapter 01
-    this.Fe = 1.05;
-    this.Ie = 1.45; // Chapter 01 -> Chapter 02
-    this.Le = 1.95;
-    this.Re = 2.15; // 360 Wave Flip
-    this.ze = 2.75;
-    this.Be = 2.35;
-    this.Ve = 2.80;
+    // Transition Thresholds matching Grail
+    this.Pe = 0.20; // Hero -> Chapter 01 merge start
+    this.Fe = 0.75; // Hero -> Chapter 01 merge complete (single focal card at center)
+    this.Ie = 1.20; // Chapter 01 -> Chapter 02
+    this.Le = 1.75;
+    this.Re = 1.95; // 360 Wave Flip
+    this.ze = 2.55;
+    this.Be = 2.15;
+    this.Ve = 2.60;
     this.He = 0.86;
     this.Ue = 0.55;
 
@@ -368,18 +368,18 @@ export class SpiralDeck {
 
     this.quests = [
       {
-        id: 1,
-        text: 'Call someone instead of texting them today. Anyone.',
-        category: 'Uncomfortable',
-        body: 'A voice carries what a text flattens. Pick a name, tap call, let it be a little awkward.',
-        guildIndex: 3
-      },
-      {
         id: 2,
         text: 'Eat your next meal with no screen, no book, nothing. Just sit.',
         category: 'Exposure',
         body: 'One meal, just the food and you. Notice when you reach for the phone, and leave it face down.',
         guildIndex: 2
+      },
+      {
+        id: 1,
+        text: 'Call someone instead of texting them today. Anyone.',
+        category: 'Uncomfortable',
+        body: 'A voice carries what a text flattens. Pick a name, tap call, let it be a little awkward.',
+        guildIndex: 3
       },
       {
         id: 3,
