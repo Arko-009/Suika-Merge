@@ -45,13 +45,7 @@ void main() {
   // Back of the card — the guild emblem pattern, full-bleed
   if (!gl_FrontFacing) {
     vec4 b = texture2D(uBack, vUv);
-    vec3 backCol = b.rgb * max(uDim, 0.7);
-    if (uReveal < 0.999) {
-      vec3 holoBack = mix(vec3(0.06, 0.12, 0.18), backCol, uReveal);
-      gl_FragColor = vec4(holoBack, b.a * (0.45 + 0.55 * uReveal));
-      return;
-    }
-    gl_FragColor = vec4(backCol, b.a);
+    gl_FragColor = vec4(b.rgb * max(uDim, 0.7), b.a);
     return;
   }
 
@@ -513,7 +507,7 @@ export class SpiralDeck {
   }
 
   buildMeshes() {
-    const geom = new THREE.PlaneGeometry(this.Se, this.Ce, 24, 16);
+    const geom = new THREE.PlaneGeometry(this.Se, this.Ce, 32, 48);
 
     for (let i = 0; i < this.fe; i++) {
       const qIdx = i % this.quests.length;
@@ -533,7 +527,7 @@ export class SpiralDeck {
         },
         transparent: true,
         side: THREE.DoubleSide,
-        depthTest: true,
+        depthTest: false,
         depthWrite: false
       });
 

@@ -222,8 +222,11 @@ export class Chapter02Timer {
     const dGrow = this.smoothstep(2.10, 2.45, progress);
     const phone = this.smoothstep(2.20, 2.65, progress);
     const hl = this.smoothstep(2.30, 2.72, progress);
-    const vCard = this.smoothstep(1.92, 2.40, progress);
-    const deckOut = this.smoothstep(1.98, 2.15, progress);
+    // The 3D card executes its full 360° wave flip / bend from 1.95 to 2.55 (matching Grail 1:1).
+    // It remains 100% visible throughout this entire range so the iconic hourglass bend and ripple are fully seen.
+    // It only smoothly cross-fades into the phone mockup once the phone has arrived and docked (progress 2.58 -> 2.72).
+    const vCard = 0.0;
+    const deckOut = this.smoothstep(2.58, 2.72, progress);
 
     // Fade out smoothly as user scrolls into Chapter 03 (About Journey)
     let aFade = 1.0;
