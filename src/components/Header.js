@@ -139,6 +139,10 @@ export class Header {
     if (labelEl) {
       labelEl.textContent = label;
     }
+    const centerEl = this.el.querySelector('.valk-header-center');
+    if (centerEl) {
+      centerEl.style.opacity = (label === 'CH 00') ? '1' : '0';
+    }
   }
 
   startVisualizer() {

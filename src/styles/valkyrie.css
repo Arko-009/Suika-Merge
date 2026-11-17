@@ -265,16 +265,24 @@ button, a, .problem-card, .milestone-node, .totem-pill-btn, .voice-track-tab, .s
    ========================================= */
 .spiral-deck-fixed-layer {
   position: fixed;
-  inset: 0;
+  inset: 130px 0 0;
   width: 100vw;
-  height: 100vh;
-  z-index: 2;
+  height: calc(100vh - 130px);
+  z-index: 3;
   pointer-events: auto;
   overflow: hidden;
   will-change: opacity, transform;
   transform: translateZ(0) scale(calc(1 - var(--vcard, 0)));
   transform-origin: 50% 42%;
-  opacity: calc((1 - var(--vcard, 0)) * (1 - var(--deckout, 0)));
+  opacity: calc((1 - var(--vcard, 0)) * (1 - var(--deckout, 0)) * var(--afade, 1));
+}
+
+@media (max-width: 768px) {
+  .spiral-deck-fixed-layer {
+    inset: 0;
+    height: 100vh;
+    height: 100lvh;
+  }
 }
 
 .spiral-deck-fixed-layer .spiral-webgl-canvas {
@@ -1149,10 +1157,9 @@ input:checked + .valk-slider-round:before {
 }
 
 .grail-section4 {
-  z-index: 3;
   pointer-events: none;
   min-height: 100vh;
-  position: relative;
+  position: static;
 }
 
 /* 1. Fullscreen WebGL Organic Ink Blot Background Canvas */
@@ -1241,7 +1248,7 @@ input:checked + .valk-slider-round:before {
 
 /* 4. Pinned Accept Overlay & Staggered Typography */
 .grail-accept-overlay {
-  z-index: 3;
+  z-index: 4;
   color: #623562;
   pointer-events: none;
   opacity: var(--afade, 1);

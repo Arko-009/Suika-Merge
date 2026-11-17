@@ -38,53 +38,34 @@ uniform sampler2D uBack;
 uniform float uSmear;
 uniform vec2 uDir;
 uniform float uDim;
-uniform float uReveal; // 0.0 = foreshadowed holographic crystal, 1.0 = fully materialized real card
 varying vec2 vUv;
 
 void main() {
-  // Back of the card — the guild emblem pattern, full-bleed
+  // Back of the card — the guild emblem, full-bleed.
   if (!gl_FrontFacing) {
     vec4 b = texture2D(uBack, vUv);
     gl_FragColor = vec4(b.rgb * max(uDim, 0.7), b.a);
     return;
   }
-
-  // Front of card — with subtle velocity smear
-  vec4 c0 = texture2D(uTex, vUv);
-  if (uSmear >= 0.0008) {
-    vec4 acc = vec4(0.0);
-    float total = 0.0;
-    for (int i = 0; i < 7; i++) {
-      float t = float(i) / 6.0 - 0.5;
-      float w = 1.0 - abs(t) * 1.3;
-      if (w <= 0.0) continue;
-      acc += texture2D(uTex, vUv + uDir * t * uSmear) * w;
-      total += w;
-    }
-    if (total > 0.0) c0 = acc / total;
-  }
-
-  // Foreshadowed Holographic Card Materialization Effect:
-  if (uReveal < 0.999) {
-    float edgeDistX = min(vUv.x, 1.0 - vUv.x);
-    float edgeDistY = min(vUv.y, 1.0 - vUv.y);
-    float edgeBorder = min(edgeDistX, edgeDistY);
-    float wireGlow = smoothstep(0.045, 0.0, edgeBorder);
-
-    float scanline = 0.88 + 0.12 * sin(vUv.y * 140.0);
-    vec3 holoBase = vec3(0.08, 0.15, 0.22) * scanline;
-    vec3 neonEdge = vec3(0.54, 0.87, 0.94); // Glowing cyan wireframe edge
-
-    vec3 realCard = c0.rgb * uDim;
-    vec3 mixedCard = mix(holoBase + neonEdge * wireGlow * 1.6, realCard, uReveal);
-    float alpha = mix(0.5 + wireGlow * 0.5, c0.a, uReveal);
-
-    gl_FragColor = vec4(mixedCard, alpha);
+  // Front — texture with velocity smear. When there's no motion, skip loop entirely.
+  if (uSmear < 0.0008) {
+    vec4 c0 = texture2D(uTex, vUv);
+    c0.rgb *= uDim;
+    gl_FragColor = c0;
     return;
   }
-
-  c0.rgb *= uDim;
-  gl_FragColor = c0;
+  vec4 acc = vec4(0.0);
+  float total = 0.0;
+  for (int i = 0; i < 7; i++) {
+    float t = float(i) / 6.0 - 0.5;
+    float w = 1.0 - abs(t) * 1.3;
+    if (w <= 0.0) continue;
+    acc += texture2D(uTex, vUv + uDir * t * uSmear) * w;
+    total += w;
+  }
+  vec4 c = acc / total;
+  c.rgb *= uDim;
+  gl_FragColor = c;
 }
 `;
 
@@ -302,34 +283,34 @@ export class SpiralDeck {
     this.Ce = (this.xe / this.ve) * this.Se; // 3.4087
     this.Me = 6.5;
 
-    // Mathematical parameters from Grail
+    // Mathematical parameters matching Grail exact Ne + Xn config
     this.cfg = {
       angleStep: 0.65,
-      radius: 3.15,
-      squish: 0.72,
-      gapX: -0.04,
-      gapY: 0.38,
+      radius: 3.0,
+      squish: 0.70,
+      gapX: -0.05,
+      gapY: 0.40,
       edgeTwist: -0.06,
-      cardScale: 0.54,
+      cardScale: 0.50,
       bend: 0.06,
       smear: 1.0,
       auto: true,
-      autoSpeed: 0.38,
+      autoSpeed: 0.15,
       mouseTilt: 0.12,
-      magnet: 0.18 // Responsive tactile hover magnet
+      magnet: 0.10
     };
 
-    // Transition Thresholds matching Grail
-    this.Pe = 0.20; // Hero -> Chapter 01 merge start
-    this.Fe = 0.75; // Hero -> Chapter 01 merge complete (single focal card at center)
-    this.Ie = 1.20; // Chapter 01 -> Chapter 02
-    this.Le = 1.75;
-    this.Re = 1.95; // 360 Wave Flip
-    this.ze = 2.55;
-    this.Be = 2.15;
-    this.Ve = 2.60;
-    this.He = 0.86;
-    this.Ue = 0.55;
+    // Transition Thresholds matching Grail exact values (Pe=.18, Fe=.72, Ie=1.18, Le=1.7, Re=1.95, ze=2.55, Be=2.15, Ve=2.6, He=.86, Ue=.55)
+    this.Pe = 0.18; // Hero -> Chapter 01 merge start
+    this.Fe = 0.72; // Hero -> Chapter 01 merge complete (single focal card at center)
+    this.Ie = 1.18; // Chapter 01 -> Chapter 02 merge start
+    this.Le = 1.70; // Chapter 01 -> Chapter 02 merge complete
+    this.Re = 1.95; // 360 Wave Flip start
+    this.ze = 2.55; // 360 Wave Flip complete
+    this.Be = 2.15; // Phone docking translation & scale start
+    this.Ve = 2.60; // Phone docking translation & scale complete
+    this.He = 0.90; // Scale multiplier when docked inside phone screen cutout
+    this.Ue = 0.58; // Y position lift (+0.58 units) to dock perfectly between GRAIL header and timer pill
 
     // Smooth single-accumulator motion
     this.targetScrollPos = 0;
@@ -430,8 +411,8 @@ export class SpiralDeck {
 
     this.scene = new THREE.Scene();
 
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const w = this.layerEl.clientWidth || window.innerWidth;
+    const h = this.layerEl.clientHeight || (window.innerHeight - 130);
     this.camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
     this.camera.position.z = 9.0;
 
@@ -492,7 +473,7 @@ export class SpiralDeck {
       const frontCanvas = document.createElement('canvas');
       drawCardFront(frontCanvas, q, g, emb, g.color, avatarImages);
       const frontTex = new THREE.CanvasTexture(frontCanvas);
-      frontTex.colorSpace = THREE.SRGBColorSpace;
+      frontTex.colorSpace = THREE.NoColorSpace;
       frontTex.minFilter = THREE.LinearFilter;
       this.frontTextures.push(frontTex);
 
@@ -500,7 +481,7 @@ export class SpiralDeck {
       const backCanvas = document.createElement('canvas');
       drawCardBack(backCanvas, emb);
       const backTex = new THREE.CanvasTexture(backCanvas);
-      backTex.colorSpace = THREE.SRGBColorSpace;
+      backTex.colorSpace = THREE.NoColorSpace;
       backTex.minFilter = THREE.LinearFilter;
       this.backTextures.push(backTex);
     }
@@ -522,8 +503,7 @@ export class SpiralDeck {
           uCardH: { value: this.Ce },
           uSmear: { value: 0.0 },
           uDir: { value: new THREE.Vector2(0, 1) },
-          uDim: { value: 1.0 },
-          uReveal: { value: 0.0 }
+          uDim: { value: 1.0 }
         },
         transparent: true,
         side: THREE.DoubleSide,
@@ -650,11 +630,11 @@ export class SpiralDeck {
   }
 
   onResize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const w = this.layerEl.clientWidth || window.innerWidth;
+    const h = this.layerEl.clientHeight || (window.innerHeight - 130);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(w, h);
+    this.renderer.setSize(w, h, false);
   }
 
   updateParams(params) {
@@ -797,10 +777,9 @@ export class SpiralDeck {
       const dimming = Math.min(1.0, baseDim + hoverFactor * 0.35); // Glow brighter on hover!
       const rawOrder = posZ * 100;
       
-      // Card scale with gentle hover pop
       const hoverScale = 1 + hoverFactor * 0.08 * (1 - l);
       const targetMergeScale = o.cardScale * 1.15;
-      const activeCh2Scale = (e === this.pe) ? o.cardScale * 1.35 : 0;
+      const activeCh2Scale = (e === this.pe) ? o.cardScale * 1.55 : 0;
 
       // ============================================
       // EXACT GRAIL INTERPOLATIONS:
@@ -848,7 +827,6 @@ export class SpiralDeck {
       uniforms.uSmear.value = smearVal;
       uniforms.uDim.value = curDim;
       uniforms.uFlip.value = d;
-      uniforms.uReveal.value = m;
     }
 
     // Dynamic cursor feedback: pointer when hovering over any card

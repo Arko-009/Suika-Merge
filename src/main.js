@@ -166,5 +166,5 @@ class App {
 
 // Instantiate on DOM load
 window.addEventListener('DOMContentLoaded', () => {
-  new App();
+  window.app = new App();
 });

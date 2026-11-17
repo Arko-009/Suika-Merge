@@ -223,10 +223,12 @@ export class Chapter02Timer {
     const phone = this.smoothstep(2.20, 2.65, progress);
     const hl = this.smoothstep(2.30, 2.72, progress);
     // The 3D card executes its full 360° wave flip / bend from 1.95 to 2.55 (matching Grail 1:1).
-    // It remains 100% visible throughout this entire range so the iconic hourglass bend and ripple are fully seen.
-    // It only smoothly cross-fades into the phone mockup once the phone has arrived and docked (progress 2.58 -> 2.72).
+    // On desktop, the card docks cleanly inside the phone mockup and stays visible inside the phone frame (media_1794907880786_4b9cd442.png).
+    // It remains docked throughout Chapter 02 until scrolling away into Chapter 03 via --afade.
+    // On mobile, the 3D card fades out as mobile uses the static fallback layout.
+    const isMobile = window.innerWidth <= 768;
     const vCard = 0.0;
-    const deckOut = this.smoothstep(2.58, 2.72, progress);
+    const deckOut = isMobile ? this.smoothstep(1.98, 2.12, progress) : 0.0;
 
     // Fade out smoothly as user scrolls into Chapter 03 (About Journey)
     let aFade = 1.0;
