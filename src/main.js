@@ -122,7 +122,18 @@ class App {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // 8. Smooth Momentum Scroll & Chapter Spy
+    // 8. Floating Join Waitlist Pill (Matching Grail 1:1)
+    this.waitPillEl = document.createElement('a');
+    this.waitPillEl.href = '#ch-waitlist';
+    this.waitPillEl.className = 'grail-wait-pill';
+    this.waitPillEl.setAttribute('aria-label', 'Join Waitlist');
+    this.waitPillEl.innerHTML = `
+      <span class="grail-pill-mark" aria-hidden="true"></span>
+      <span class="grail-pill-btn">Join Waitlist</span>
+    `;
+    document.body.appendChild(this.waitPillEl);
+
+    // 9. Smooth Momentum Scroll & Chapter Spy
     this.smoothScroll = new SmoothScroll({
       onChapterChange: (label, title) => {
         this.header.updateChapter(label, title);
@@ -141,6 +152,39 @@ class App {
 
       if (this.ch02 && typeof this.ch02.onScroll === 'function') {
         this.ch02.onScroll(progress, scrollY, vh);
+      }
+
+      if (this.ch03 && typeof this.ch03.onScroll === 'function') {
+        this.ch03.onScroll();
+      }
+
+      // Floating waitlist pill visibility & tone sync
+      if (this.waitPillEl) {
+        const isPastHero = scrollY > vh * 0.15;
+        this.waitPillEl.classList.toggle('pill-on', isPastHero);
+
+        const checkTone = () => {
+          const s5 = this.ch03?.el?.getBoundingClientRect();
+          const s4 = this.ch02?.el?.querySelector('.grail-section4')?.getBoundingClientRect();
+          const testY = vh - 52;
+          const inRect = (r) => !!r && r.top < testY && r.bottom > testY;
+
+          if (inRect(s5)) return 'light';
+          if (inRect(s4)) return 'pink';
+          return 'dark';
+        };
+
+        const currentTone = checkTone();
+        this.waitPillEl.classList.toggle('pill-light', currentTone === 'light');
+        this.waitPillEl.classList.toggle('pill-pink', currentTone === 'pink');
+      }
+
+      const headerEl = document.querySelector('.valk-header');
+      if (headerEl) {
+        const hOffset = Math.max(0, scrollY - vh * 0.15);
+        const hFade = Math.max(0, 1 - hOffset / (vh * 0.3));
+        headerEl.style.opacity = hFade.toFixed(3);
+        headerEl.style.pointerEvents = hFade > 0.1 ? 'auto' : 'none';
       }
 
       const prompt = document.querySelector('.hero-scroll-prompt');

@@ -1394,223 +1394,387 @@ input:checked + .valk-slider-round:before {
 }
 
 /* =========================================
-   CHAPTER 03: ABOUT JOURNEY
+   GRAIL // CHAPTER 03: ABOUT JOURNEY (Section 5)
+   1:1 Exact Match from grail-app.com
    ========================================= */
-.ch-journey {
-  background: var(--bg-deep);
+.grail-section5 {
+  z-index: 5;
+  color: #000000;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif);
+  transform: rotate(calc(var(--s5rot, 0) * 7deg)) scale(calc(1 - var(--s5off, 0) * .16));
+  transform-origin: 50%;
+  will-change: transform;
+  background: #f6f6f6;
+  border-radius: 24px;
   position: relative;
-  z-index: 3;
+  min-height: 100vh;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.4);
 }
 
-.journey-kicker {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--gold-primary);
-  display: block;
-  margin-bottom: 12px;
-}
-
-.journey-heading {
-  font-size: clamp(34px, 4.5vw, 56px);
-  line-height: 1.15;
-  color: #ffffff;
-  margin-bottom: 18px;
-}
-
-.journey-heading em {
-  color: var(--gold-primary);
-  font-style: italic;
-}
-
-.journey-sub {
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  max-width: 780px;
-  margin-bottom: 56px;
-}
-
-.milestones-track {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 56px;
-}
-
-.milestone-node {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 20px;
-  padding: 28px;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.milestone-node.active {
-  border-color: var(--border-gold);
-}
-
-.milestone-node:hover {
-  transform: translateY(-4px);
-  border-color: var(--gold-primary);
-}
-
-.m-roman {
-  font-family: var(--font-serif);
-  font-size: 32px;
-  color: var(--gold-primary);
-  display: block;
-  margin-bottom: 14px;
-}
-
-.m-stage {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
-  display: block;
-  margin-bottom: 4px;
-}
-
-.m-info h4 {
-  font-size: 17px;
-  color: #ffffff;
-  margin-bottom: 8px;
-}
-
-.m-info p {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-secondary);
-}
-
-.streak-matrix-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-gold);
-  border-radius: 28px;
-  padding: 40px;
-  box-shadow: 0 20px 48px rgba(0,0,0,0.5);
-}
-
-.matrix-head {
-  display: flex;
+.grail-s5-colontitle {
+  z-index: 6;
+  white-space: nowrap;
+  pointer-events: none;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-}
-
-.matrix-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  color: var(--gold-primary);
-  display: block;
-  margin-bottom: 4px;
-}
-
-.matrix-title {
-  font-size: 24px;
-  color: #ffffff;
-}
-
-.matrix-streak-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: rgba(202, 168, 110, 0.15);
-  border: 1px solid var(--border-gold);
-  border-radius: 20px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--gold-light);
-}
-
-.streak-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
   gap: 12px;
-  margin-bottom: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.31;
+  display: flex;
+  position: absolute;
+  top: 25px;
+  left: 32px;
+  right: 32px;
+  color: #000000;
+  opacity: clamp(0, (0.8 - var(--vreveal, 0)) / 0.2, 1);
+  transition: opacity 0.2s ease-out;
 }
 
-.streak-cell {
-  aspect-ratio: 1;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.grail-s5-colontitle .colon-right {
+  text-align: right;
+}
+
+.grail-s5-inner {
+  padding: 80px 40px 14vh;
+  max-width: 1360px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.grail-s5-head {
+  font-family: "PP Pangaia", var(--font-serif), Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  margin: 0;
+  font-size: clamp(40px, 6.2vw, 92px);
+  font-weight: 300;
+  line-height: .88;
+  color: #000000;
+}
+
+.grail-s5-head-line {
+  opacity: 0;
+  display: block;
+  transform: translateY(.42em);
+}
+
+.grail-s5-in .grail-s5-head-line {
+  animation: .8s cubic-bezier(.22, 1, .36, 1) forwards grailS5HeadRise;
+}
+
+.grail-s5-in .grail-s5-head-line:nth-child(2) {
+  animation-delay: .12s;
+}
+
+@keyframes grailS5HeadRise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grail-s5-quest-wrap {
+  white-space: nowrap;
+}
+
+.grail-s5-crest {
+  vertical-align: -.14em;
+  width: .88em;
+  height: .88em;
+  display: inline-block;
   position: relative;
+  -webkit-mask-image: url(/guild-crest.svg);
+  mask-image: url(/guild-crest.svg);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   overflow: hidden;
 }
 
-.streak-cell:hover {
-  border-color: var(--gold-primary);
-  background: rgba(202, 168, 110, 0.08);
+.grail-s5-crest img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  transition: opacity .55s, transform .55s cubic-bezier(.22, 1, .36, 1);
+  position: absolute;
+  inset: 0;
 }
 
-.streak-cell.completed {
-  background: rgba(202, 168, 110, 0.12);
-  border-color: var(--border-gold);
+.grail-s5-sub {
+  color: rgba(0, 0, 0, 0.6);
+  max-width: 471px;
+  margin: 26px 0 0;
+  font-size: 16px;
+  line-height: 1.24;
 }
 
-.streak-cell.current {
-  background: rgba(202, 168, 110, 0.25);
-  border-color: var(--gold-primary);
-  box-shadow: 0 0 16px rgba(202, 168, 110, 0.3);
+.grail-s5-list {
+  margin-top: 56px;
 }
 
-.cell-num {
-  font-family: var(--font-mono);
+.grail-s5-row {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  column-gap: 5%;
+  min-height: 169px;
+  padding-top: 17px;
+  display: grid;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.grail-s5-row:before {
+  content: "";
+  height: 1px;
+  transform: scaleX(var(--rp, 0));
+  transform-origin: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  will-change: transform;
+}
+
+.grail-s5-left {
+  max-width: 331px;
+  transform: translateX(calc((1 - var(--rp, 0)) * 17vw));
+  opacity: var(--rp, 0);
+  flex-direction: column;
+  display: flex;
+  will-change: transform, opacity;
+}
+
+.grail-s5-chance-label {
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.24;
+}
+
+.grail-s5-chance {
+  color: #000000;
+  margin: 3px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.grail-s5-num {
+  color: rgba(0, 0, 0, 0.6);
+  margin: auto 0 17px;
+  font-size: 16px;
+  font-feature-settings: "tnum";
+}
+
+.grail-s5-photo {
+  object-fit: cover;
+  width: clamp(170px, 14vw, 201px);
+  height: clamp(112px, 9.2vw, 133px);
+  clip-path: inset(calc((1 - var(--rp, 0)) * 50%));
+  align-self: start;
+  border-radius: 2px;
+  will-change: clip-path;
+  background: #e0e0e0;
+}
+
+.grail-s5-desc {
+  color: rgba(0, 0, 0, 0.6);
+  max-width: 335px;
+  transform: translateX(calc((1 - var(--rp, 0)) * -17vw));
+  opacity: var(--rp, 0);
+  justify-self: end;
+  font-size: 16px;
+  line-height: 1.24;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  .grail-section5 {
+    transform: rotate(calc(var(--s5rot, 0) * 3.2deg)) scale(calc(1 - var(--s5off, 0) * .12));
+    transform-origin: 50% 40vh;
+  }
+
+  .grail-s5-colontitle {
+    top: max(25px, env(safe-area-inset-top));
+    left: 16px;
+    right: 16px;
+  }
+
+  .grail-s5-inner {
+    padding: 46px 16px 12vh;
+  }
+
+  .grail-s5-head {
+    font-size: clamp(33px, 10.2vw, 40px);
+  }
+
+  .grail-s5-sub {
+    display: none;
+  }
+
+  .grail-s5-list {
+    margin-top: 34px;
+  }
+
+  .grail-s5-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+    min-height: 0;
+    margin-bottom: 13px;
+    padding-top: 14px;
+    display: flex;
+  }
+
+  .grail-s5-row:before {
+    transform: none;
+  }
+
+  .grail-s5-left {
+    opacity: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 14px;
+    width: 100%;
+    max-width: none;
+    transform: none;
+  }
+
+  .grail-s5-left > div {
+    flex: auto;
+    min-width: 0;
+  }
+
+  .grail-s5-num {
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .grail-s5-photo {
+    aspect-ratio: 153/101;
+    clip-path: none;
+    align-self: flex-start;
+    width: min(153px, 42vw);
+    height: auto;
+  }
+
+  .grail-s5-desc {
+    opacity: 1;
+    place-self: stretch start;
+    width: 100%;
+    max-width: none;
+    transform: none;
+  }
+}
+
+/* Floating Waitlist Pill (1:1 Exact Match) */
+.grail-wait-pill {
+  z-index: 30;
+  left: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  --pill-accent: #ffcdff;
+  --pill-btn-bg: rgba(255, 255, 255, 0.14);
+  --pill-btn-fg: #ffcdff;
+  --pill-body: rgba(24, 24, 24, 0.6);
+  --pill-border: rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--pill-border);
+  background: var(--pill-body);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  cursor: pointer;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px);
+  border-radius: 84px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 6px 6px 16px;
+  transition: opacity 0.35s ease, transform 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+  display: flex;
+  position: fixed;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.grail-wait-pill.pill-on {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.grail-wait-pill.pill-light {
+  --pill-accent: #5f5138;
+  --pill-btn-bg: #f4f1ec;
+  --pill-btn-fg: #5f5138;
+  --pill-body: #ffffff;
+  --pill-border: rgba(0, 0, 0, 0.14);
+}
+
+.grail-wait-pill.pill-pink {
+  --pill-accent: rgba(84, 36, 76, 0.42);
+  --pill-btn-bg: rgba(255, 255, 255, 0.5);
+  --pill-btn-fg: #7c4f74;
+  --pill-body: rgba(96, 42, 86, 0.2);
+  --pill-border: rgba(255, 255, 255, 0.3);
+}
+
+.grail-wait-pill:hover {
+  transform: translateY(-3px);
+}
+
+.grail-wait-pill:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.grail-pill-mark {
+  width: 20px;
+  height: 20px;
+  background-image: url(/official-logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(0 0 4px rgba(255, 205, 255, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.grail-wait-pill:hover .grail-pill-mark {
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.grail-pill-btn {
+  background: var(--pill-btn-bg);
+  color: var(--pill-btn-fg);
+  border-radius: 40px;
+  padding: 8px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  letter-spacing: 0.02em;
+  transition: filter 0.2s ease;
 }
 
-.cell-stat-tag {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--stat-wis);
-  margin-top: 4px;
+.grail-wait-pill:hover .grail-pill-btn {
+  filter: brightness(1.08);
 }
 
-.matrix-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-subtle);
-  font-family: var(--font-mono);
-  font-size: 11px;
-}
-
-.legend-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  color: var(--text-muted);
-}
-
-.legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.legend-dot.completed { background: var(--gold-primary); }
-.legend-dot.current { background: #ffffff; box-shadow: 0 0 8px #ffffff; }
-.legend-dot.upcoming { background: rgba(255,255,255,0.15); }
-
-.matrix-quote {
-  color: var(--gold-light);
-  font-style: italic;
+@media (max-width: 768px) {
+  .grail-wait-pill {
+    left: 50%;
+    right: auto;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    transform: translate(-50%, 16px);
+  }
+  .grail-wait-pill.pill-on {
+    transform: translate(-50%, 0);
+  }
+  .grail-wait-pill:hover {
+    transform: translate(-50%, -3px);
+  }
 }
 
 /* =========================================

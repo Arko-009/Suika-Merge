@@ -231,8 +231,13 @@ export class Chapter02Timer {
     const deckOut = isMobile ? this.smoothstep(1.98, 2.12, progress) : 0.0;
 
     // Fade out smoothly as user scrolls into Chapter 03 (About Journey)
+    // Synchronized to Section 5 top edge distance: n / (vh * 0.7) matching Grail 1:1
+    const ch03El = document.getElementById('ch-journey');
     let aFade = 1.0;
-    if (progress > 3.2) {
+    if (ch03El) {
+      const n = ch03El.offsetTop - scrollY;
+      aFade = Math.min(1, Math.max(0, n / (vh * 0.7)));
+    } else if (progress > 3.2) {
       aFade = Math.max(0, 1 - this.smoothstep(3.2, 3.8, progress));
     }
 
