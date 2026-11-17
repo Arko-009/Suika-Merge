@@ -268,9 +268,9 @@ button, a, .problem-card, .milestone-node, .totem-pill-btn, .voice-track-tab, .s
   inset: 130px 0 0;
   width: 100vw;
   height: calc(100vh - 130px);
-  z-index: 3;
+  z-index: 2;
   pointer-events: auto;
-  overflow: hidden;
+  overflow: visible;
   will-change: opacity, transform;
   transform: translateZ(0) scale(calc(1 - var(--vcard, 0)));
   transform-origin: 50% 42%;
@@ -305,8 +305,21 @@ button, a, .problem-card, .milestone-node, .totem-pill-btn, .voice-track-tab, .s
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
+}
+
+/* Smooth black gradient over top 52vh matching Grail 1:1 to gently fade cards under navbar */
+.valk-hero:before {
+  content: "";
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(#000 0% 30%, #0000 100%);
+  height: 52vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .hero-sticky-stage {
@@ -1048,10 +1061,19 @@ input:checked + .valk-slider-round:before {
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(rgba(0, 0, 0, 0) 0%, #000000 24% 76%, rgba(0, 0, 0, 0) 100%) !important;
+  background: linear-gradient(#0000 0%, #000 24% 76%, #0000 100%) !important;
   pointer-events: none;
   padding: 0;
   box-sizing: border-box;
+}
+
+.ch-problem:after {
+  content: "";
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(#0000 0%, #000000bf 22%, #000 32% 64%, #000000bf 76%, #0000 100%);
+  position: absolute;
+  inset: 0;
 }
 
 .ch-problem .colontitle-bar {
@@ -1070,7 +1092,7 @@ input:checked + .valk-slider-round:before {
 .grail-s2-inner {
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   pointer-events: auto;
   padding: 0 40px;
   box-sizing: border-box;
